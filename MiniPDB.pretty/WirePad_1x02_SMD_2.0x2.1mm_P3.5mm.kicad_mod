@@ -1,9 +1,9 @@
-(footprint "WirePad_1x02_SMD_2.9x3.6mm_P5.0mm"
+(footprint "WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
 	(version 20260206)
 	(generator "pcbnew")
 	(generator_version "10.0")
 	(layer "F.Cu")
-	(descr "Pair of SMD wire solder pads, 2.9x3.6mm, 5.0mm pitch, for hand-soldered wires up to ~16 AWG. No silkscreen: labels are on the board.")
+	(descr "Pair of SMD wire solder pads, 2.0x2.1mm, 3.5mm pitch, for hand-soldered wires up to ~20 AWG (1 A). No silkscreen: labels are on the board.")
 	(tags "solder wire pad SMD pair")
 	(property "Reference" "REF**"
 		(at 0 0 90)
@@ -15,8 +15,8 @@
 			)
 		)
 	)
-	(property "Value" "WirePad_1x02_SMD_2.9x3.6mm_P5.0mm"
-		(at 0 5.3 0)
+	(property "Value" "WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
+		(at 0 3.8 0)
 		(layer "F.Fab")
 		(hide yes)
 		(effects
@@ -53,8 +53,8 @@
 	(attr smd exclude_from_pos_files exclude_from_bom)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_rect
-		(start -1.45 -4.3)
-		(end 1.45 -0.7)
+		(start -1 -2.8)
+		(end 1 -0.7)
 		(stroke
 			(width 0.1)
 			(type solid)
@@ -63,8 +63,8 @@
 		(layer "F.Fab")
 	)
 	(fp_rect
-		(start -1.45 0.7)
-		(end 1.45 4.3)
+		(start -1 0.7)
+		(end 1 2.8)
 		(stroke
 			(width 0.1)
 			(type solid)
@@ -73,8 +73,8 @@
 		(layer "F.Fab")
 	)
 	(fp_rect
-		(start -1.7 -4.55)
-		(end 1.7 4.55)
+		(start -1.25 -3.05)
+		(end 1.25 3.05)
 		(stroke
 			(width 0.05)
 			(type solid)
@@ -83,16 +83,16 @@
 		(layer "F.CrtYd")
 	)
 	(pad "1" smd roundrect
-		(at 0 -2.5)
-		(size 2.9 3.6)
+		(at 0 -1.75)
+		(size 2 2.1)
 		(layers "F.Cu" "F.Mask")
-		(roundrect_rratio 0.08)
+		(roundrect_rratio 0.1)
 	)
 	(pad "2" smd roundrect
-		(at 0 2.5)
-		(size 2.9 3.6)
+		(at 0 1.75)
+		(size 2 2.1)
 		(layers "F.Cu" "F.Mask")
-		(roundrect_rratio 0.08)
+		(roundrect_rratio 0.1)
 	)
 	(embedded_fonts no)
 )

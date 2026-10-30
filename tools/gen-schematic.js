@@ -1,5 +1,6 @@
-// Generates the MiniPDB schematic for KiCad 10: battery, switch and load wire pads,
-// with the switch in series with battery +, plus two M2 mounting holes.
+// Generates the MiniPDB schematic for KiCad 10: solar panel, battery, switch and load wire
+// pads, a CN3163 linear solar charger with CHRG/DONE LEDs, the switch in series with battery +
+// toward the load, plus two M2 mounting holes.
 // Usage: node tools/gen-schematic.js [project dir, default: repo root]
 const fs = require("fs");
 const crypto = require("crypto");
@@ -46,11 +47,78 @@ function pinsOf(symText) {
   return out;
 }
 
+// ---------- CN3163 symbol (pinout from the Consonance datasheet, eSOP-8) ----------
+const fx = () => `(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t)`;
+function libProp(name, value, x, y, hide, justify) {
+  return `\t\t(property "${name}" "${value}"
+			(at ${x} ${y} 0)
+			${hide ? "(hide yes)\n\t\t\t" : ""}(effects
+				(font
+					(size 1.27 1.27)
+				)${justify ? `\n\t\t\t\t(justify ${justify})` : ""}
+			)
+		)`;
+}
+function libPin(type, x, y, ang, name, num) {
+  return `\t\t\t(pin ${type} line
+				(at ${x} ${y} ${ang})
+				(length 2.54)
+				(name "${name}"
+					${fx().replace(/\n\t/g, "\n\t\t\t")}
+				)
+				(number "${num}"
+					${fx().replace(/\n\t/g, "\n\t\t\t")}
+				)
+			)`;
+}
+const CN3163 = `\t(symbol "CN3163"
+		(pin_names
+			(offset 1.016)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+${libProp("Reference", "U", -7.62, 8.89, false, "left")}
+${libProp("Value", "CN3163", 7.62, 8.89, false, "right")}
+${libProp("Footprint", "Package_SO:SOIC-8-1EP_3.9x4.9mm_P1.27mm_EP2.41x3.3mm", 0, -17.78, true)}
+${libProp("Datasheet", "http://www.consonance-elec.com/pdf/datasheet/DSE-CN3163.pdf", 0, -20.32, true)}
+${libProp("Description", "1A linear Li-ion charger for solar-powered systems, input-adaptive current, 4.2V, eSOP-8", 0, 0, true)}
+${libProp("ki_keywords", "solar lithium Li-ion charger linear", 0, 0, true)}
+${libProp("ki_fp_filters", "SOIC*1EP*3.9x4.9mm*P1.27mm*", 0, 0, true)}
+		(symbol "CN3163_0_1"
+			(rectangle
+				(start -7.62 7.62)
+				(end 7.62 -10.16)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "CN3163_1_1"
+${[
+  libPin("power_in", -10.16, 5.08, 0, "VIN", "4"),
+  libPin("passive", -10.16, 0, 0, "ISET", "2"),
+  libPin("input", -10.16, -5.08, 0, "TEMP", "1"),
+  libPin("power_out", 10.16, 5.08, 180, "BAT", "5"),
+  libPin("input", 10.16, 2.54, 180, "FB", "8"),
+  libPin("open_collector", 10.16, 0, 180, "~{CHRG}", "7"),
+  libPin("open_collector", 10.16, -2.54, 180, "~{DONE}", "6"),
+  libPin("power_in", -1.27, -12.7, 90, "GND", "3"),
+  libPin("passive", 1.27, -12.7, 90, "EP", "9"),
+].join("\n")}
+		)
+		(embedded_fonts no)
+	)`;
+
 const SYMS = {};
 function useSym(libId) {
   if (SYMS[libId]) return SYMS[libId];
   const [lib, name] = libId.split(":");
-  const text = libSymbol(lib, name);
+  const text = lib === "MiniPDB" ? CN3163.replace('(symbol "CN3163"', '(symbol "MiniPDB:CN3163"') : libSymbol(lib, name);
   return (SYMS[libId] = { text, pins: pinsOf(text) });
 }
 
@@ -96,19 +164,75 @@ function flag(at, rot) {
   return place(`#FLG0${String(flgN).padStart(2, "0")}`, "power:PWR_FLAG", at.x, at.y, { value: "PWR_FLAG", power: true, rot });
 }
 // Two SMD wire pads per footprint (pad 1 on top), project library MiniPDB.pretty.
-const PADS = "MiniPDB:WirePad_1x02_SMD_2.9x3.6mm_P5.0mm";
+const PADS = "MiniPDB:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm";
+const FP = {
+  r0603: "Resistor_SMD:R_0603_1608Metric",
+  c0603: "Capacitor_SMD:C_0603_1608Metric",
+  // The status LEDs and their resistors are 0402 so they fit beside the IC on a 20 x 12 mm board.
+  r0402: "Resistor_SMD:R_0402_1005Metric",
+  led0402: "LED_SMD:LED_0402_1005Metric",
+};
 
 // ---------- circuit ----------
+// SOLAR -> CN3163 -> BAT+ (cell side, so the cell charges with the switch open);
+// BATTERY + -> SWITCH -> LOAD + ; all negatives share GND.
+// Charger as in the SD05CRMA module (datasheet Figure 1), with its CHRG (red) and DONE (green)
+// LEDs from VIN, so they light only while the panel is delivering power.
+const CH = 40.64; // charger block top rail
+const J4 = placeByPin("J4", "Connector_Generic:Conn_01x02", "1", P(27.94, CH), { mirror: "y", value: "SOLAR", fp: PADS, noBom: true });
+const U1 = place("U1", "MiniPDB:CN3163", 73.66, CH + 5.08, { value: "CN3163" });
+const C1 = placeByPin("C1", "Device:C", "1", P(45.72, CH), { value: "10uF/10V", fp: FP.c0603, labelLeft: true });
+// The panel only reaches VIN through a passive pad: flag it for ERC.
+const vinFlag = P(40.64, CH);
+wire(J4.pin("1"), vinFlag, P(45.72, CH), U1.pin("4"));
+flag(vinFlag);
+junction(vinFlag);
+junction(P(45.72, CH));
+LABELS.push({ name: "VIN", at: P(50.8, CH), ang: 0 });
+gnd(C1.pin("2"));
+gnd(wire(J4.pin("2"), P(30.48, J4.pin("2").y), P(30.48, CH + 7.62)));
+// TEMP grounded: battery temperature sensing disabled (no NTC in a bare cell).
+gnd(wire(U1.pin("1"), P(60.96, U1.pin("1").y)));
+// R_ISET: ICH = 1188V / 1.2k = 0.99A (datasheet "Setting Charge Current").
+const R1 = placeByPin("R1", "Device:R", "1", P(60.96, U1.pin("2").y), { rot: 270, value: "1.2k 1%", fp: FP.r0603 });
+wire(U1.pin("2"), R1.pin("1"));
+gnd(wire(R1.pin("2"), P(50.8, R1.pin("2").y), P(50.8, R1.pin("2").y + 2.54)));
+const gndJoin = P(U1.pin("3").x, U1.pin("3").y + 2.54);
+wire(U1.pin("3"), gndJoin, P(U1.pin("9").x, gndJoin.y), U1.pin("9"));
+gnd(gndJoin);
+// BAT and FB tied (4.2V float, no Rx); C2 is the datasheet's required BAT capacitor.
+// The BAT+ rail runs above the IC so the LED chains can leave CHRG/DONE to the right.
+const fbX = 86.36, batY = CH - 10.16;
+wire(U1.pin("8"), P(fbX, U1.pin("8").y), P(fbX, batY), P(91.44, batY), P(96.52, batY));
+wire(U1.pin("5"), P(fbX, U1.pin("5").y));
+junction(P(fbX, U1.pin("5").y));
+junction(P(91.44, batY));
+LABELS.push({ name: "BAT+", at: P(96.52, batY), ang: 0 });
+const C2 = placeByPin("C2", "Device:C", "1", P(91.44, batY), { value: "10uF/10V", fp: FP.c0603 });
+gnd(C2.pin("2"));
+// Status LEDs (datasheet "Open-Drain Status Outputs"): ~CHRG sinks while charging (red),
+// ~DONE once charging has terminated (green). ~1k gives 2-3 mA from a 5V panel.
+function statusLed(n, y, colour) {
+  const D = placeByPin(`D${n}`, "Device:LED", "1", P(96.52, y), { value: colour, fp: FP.led0402 });
+  const R = placeByPin(`R${n + 1}`, "Device:R", "1", P(106.68, y), { rot: 90, value: "1k", fp: FP.r0402 });
+  wire(D.pin("2"), R.pin("1"));
+  wire(R.pin("2"), P(119.38, y));
+  LABELS.push({ name: "VIN", at: P(119.38, y), ang: 0 });
+  return D;
+}
+const D1 = statusLed(1, U1.pin("7").y, "RED");
+wire(U1.pin("7"), D1.pin("1"));
+const D2 = statusLed(2, U1.pin("6").y + 7.62, "GREEN");
+wire(U1.pin("6"), P(fbX, U1.pin("6").y), P(fbX, D2.pin("1").y), D2.pin("1"));
+
 // BATTERY + -> SWITCH -> LOAD + ; BATTERY - and LOAD - share GND.
 const RAIL = 76.2;
 const J1 = placeByPin("J1", "Connector_Generic:Conn_01x02", "1", P(55.88, RAIL), { mirror: "y", value: "BATTERY", fp: PADS, noBom: true });
 // The switch pads face down so the battery and load sides read left to right.
 const J2 = placeByPin("J2", "Connector_Generic:Conn_01x02", "1", P(76.2, RAIL - 5.08), { rot: 90, value: "SWITCH", fp: PADS, noBom: true });
 const J3 = placeByPin("J3", "Connector_Generic:Conn_01x02", "1", P(96.52, RAIL), { value: "LOAD", fp: PADS, noBom: true });
-const batFlag = P(66.04, RAIL);
-wire(J1.pin("1"), batFlag, P(J2.pin("1").x, RAIL), J2.pin("1"));
-flag(batFlag);
-junction(batFlag);
+// BAT+ is driven by the charger's BAT pin, so it needs no PWR_FLAG.
+wire(J1.pin("1"), P(J2.pin("1").x, RAIL), J2.pin("1"));
 LABELS.push({ name: "BAT+", at: P(58.42, RAIL), ang: 0 });
 wire(J2.pin("2"), P(J2.pin("2").x, RAIL), J3.pin("1"));
 LABELS.push({ name: "VOUT", at: P(86.36, RAIL), ang: 0 });
@@ -124,11 +248,14 @@ for (let i = 0; i < 2; i++)
 TEXTS.push({
   at: P(50.8, 101.6),
   text: [
-    "Minimal power distribution board, 20 x 10 mm, two M2 holes.",
-    "- J1 BATTERY: wire pads, 1 = BAT+, 2 = GND.",
-    "- J2 SWITCH: an off-board SPST switch in series with battery +. 1 = BAT+, 2 = VOUT. Rate it for the full load current.",
-    "- J3 LOAD: wire pads, 1 = VOUT (switched battery +), 2 = GND.",
-    "- Pads 2.9 x 3.6 mm suit wires up to ~16 AWG. Copper path sized for ~5 A on 1 oz copper (see CLAUDE.md).",
+    "Mini PDB with solar charger, 20 x 12 mm, two M2 holes. No net carries more than 1 A.",
+    "- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.",
+    "- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel",
+    "  sags toward 4.4V and by thermal regulation (~130C die). TEMP grounded (no NTC).",
+    "- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Both fed from VIN: dark without sun.",
+    "- J1 BATTERY: 1S Li-ion, 1 = BAT+, 2 = GND. The charger feeds BAT+ directly, so the cell charges with the switch open.",
+    "- J2 SWITCH: off-board SPST in series with battery + toward the load. 1 = BAT+, 2 = VOUT.",
+    "- J3 LOAD: 1 = VOUT (switched battery +), 2 = GND.",
   ].join("\\n"),
 });
 
@@ -154,12 +281,22 @@ function emitPart(p) {
   const libDesc = libVal("Description") || "";
   const w = (s) => s.length * 1.1;
   let refAt, valAt, hideVal;
+  // Device:R and Device:C are drawn vertical at rotation 0, Device:LED horizontal.
+  const horiz = !!(p.rot % 180) !== (p.libId === "Device:LED");
   if (o.power) {
     refAt = [x, y]; valAt = [x, y + 3.81];
     hideVal = p.libId === "power:PWR_FLAG";
+  } else if (p.libId === "MiniPDB:CN3163") {
+    refAt = [x - 7.62, y - 8.89]; valAt = [x + 7.62, y - 8.89];
+  } else if (p.libId.startsWith("Device") && horiz) {
+    // Horizontal: reference above, value below (an LED's light arrows hang below its body).
+    refAt = [x, y - 2.54]; valAt = [x, y + (p.libId === "Device:LED" ? 3.81 : 2.54)];
+  } else if (p.libId.startsWith("Device")) {
+    const dx = o.labelLeft ? -2.54 : 2.54;
+    refAt = [x + dx, y - 1.27]; valAt = [x + dx, y + 1.27];
   } else if (p.libId.startsWith("Connector") && p.rot === 90) {
-    // Pins point down: fields above the body.
-    refAt = [x + 1.27, y - 5.08]; valAt = [x + 1.27, y - 2.54];
+    // Pins point down: fields to the right of the body.
+    refAt = [x + 5.08, y - 1.27]; valAt = [x + 5.08, y + 1.27];
   } else if (p.libId.startsWith("Connector")) {
     // Value beside the body, on the side away from the pins.
     const dir = p.mirror === "y" ? -1 : 1;
@@ -167,9 +304,17 @@ function emitPart(p) {
   } else {
     refAt = [x, y - 3.81]; valAt = [x, y + 3.81];
   }
+  const side = o.labelLeft ? "right" : "left";
+  const just =
+    p.libId === "MiniPDB:CN3163" ? ["left", "right"]
+    : p.libId.startsWith("Device") && !horiz ? [side, side]
+    : p.libId.startsWith("Connector") && p.rot === 90 ? ["left", "left"]
+    : [];
+  // Field angles are relative to the symbol, so counter-rotate to keep text horizontal.
+  const ang = p.rot % 180 ? (360 - p.rot) % 360 : 0;
   const props = [
-    prop("Reference", p.ref, ...refAt, { hide: o.power }),
-    prop("Value", o.value, ...valAt, { hide: hideVal }),
+    prop("Reference", p.ref, ...refAt, { hide: o.power, justify: just[0], ang }),
+    prop("Value", o.value, ...valAt, { hide: hideVal, justify: just[1], ang }),
     prop("Footprint", o.fp || libFp, x, y, { hide: true }),
     prop("Datasheet", libDs, x, y, { hide: true }),
     prop("Description", libDesc, x, y, { hide: true }),
@@ -208,8 +353,8 @@ const out = [
 	(title_block
 		(title "Mini PDB")
 		(date "2026-10-30")
-		(rev "0.1")
-		(comment 1 "Battery -> switch -> load wire-pad distribution board, 20 x 10 mm, 2x M2")
+		(rev "0.2")
+		(comment 1 "Solar -> CN3163 -> battery; battery -> switch -> load. Wire pads, 20 x 12 mm, 2x M2")
 	)
 	(lib_symbols
 ${Object.values(SYMS).map((s) => "\t\t" + indent(s.text.replace(/^\t/, ""))).join("\n")}
@@ -229,6 +374,18 @@ ${Object.values(SYMS).map((s) => "\t\t" + indent(s.text.replace(/^\t/, ""))).joi
 `,
 ];
 fs.writeFileSync(SCH, out.join("\n"));
+
+// Project symbol library + table so the CN3163 is reusable from the symbol chooser.
+fs.writeFileSync(
+  path.join(PROJ, "MiniPDB.kicad_sym"),
+  `(kicad_symbol_lib\n\t(version 20251024)\n\t(generator "kicad_symbol_editor")\n\t(generator_version "10.0")\n${CN3163}\n)\n`
+);
+const tbl = path.join(PROJ, "sym-lib-table");
+if (!fs.existsSync(tbl))
+  fs.writeFileSync(
+    tbl,
+    `(sym_lib_table\n\t(version 7)\n\t(lib (name "MiniPDB")(type "KiCad")(uri "\${KIPRJMOD}/MiniPDB.kicad_sym")(options "")(descr "Project-specific symbols"))\n)\n`
+  );
 
 for (const p of PARTS.filter((p) => !p.o.power))
   console.log(p.ref.padEnd(4), p.libId.padEnd(34), String(p.o.value).padEnd(10), Object.entries(p.sym.pins).map(([n]) => `${n}@${JSON.stringify(p.pin(n))}`).join(" "));

@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "MiniPDB")(type "KiCad")(uri "${KIPRJMOD}/MiniPDB.kicad_sym")(options "")(descr "Project-specific symbols"))
+)
