@@ -1,9 +1,9 @@
-# Builds the whole MiniPDB board from the schematic netlist: footprints placed and linked to
+# Builds the whole SolarMeshMiniPDB board from the schematic netlist: footprints placed and linked to
 # their symbols, hand-placed tracks and vias, GND pours on both layers kept clear of the M2
 # holes, silkscreen, and a square-cornered 20 x 12 mm outline (V-score panel friendly).
 # Run with KiCad's Python:
 #   "C:\Program Files\KiCad\10.0\bin\python.exe" tools/build-pcb.py <netlist.xml> [project dir, default: repo root]
-# Netlist: kicad-cli sch export netlist --format kicadxml -o output/net.xml MiniPDB.kicad_sch
+# Netlist: kicad-cli sch export netlist --format kicadxml -o output/net.xml SolarMeshMiniPDB.kicad_sch
 #
 # Layout (top view). Top band: M2 holes and four wire-pad pairs, + row on top:
 #   (H1)  SOL+ BAT+=SW_A  OUT+  (H2)      BAT+ = SW_A bridged on F.Cu
@@ -21,7 +21,7 @@ import xml.etree.ElementTree as ET
 import pcbnew
 
 FPDIR = "C:/Program Files/KiCad/10.0/share/kicad/footprints"
-NAME = "MiniPDB"
+NAME = "SolarMeshMiniPDB"
 ORIGIN = (100.0, 100.0)  # board top-left in the editor, mm
 W, H = 20.0, 12.0  # board size, mm
 CORNER = 0.0  # outline corner radius, mm; 0 = sharp corners so panels can be V-scored
@@ -93,7 +93,7 @@ COLUMN_LABELS = {"J4": "SOL", "J1": "BAT", "J2": "SW", "J3": "OUT"}
 LABEL_TEXT = 0.8
 ROW_MARKS = [("+", 0.85, 0.8), ("-", 6.0, 1.0)]  # text, y, height
 # Back: kept in the via-free bands at y 2.5-4.2 and 4.9-6.6.
-BACK_TEXT = [("Mini PDB v2.0", 0.9, PAD_ROW_Y), ("by JaisorGadgets", 0.8, 5.65)]  # text, height, y
+BACK_TEXT = [("SolarMeshMiniPDB", 0.9, PAD_ROW_Y), ("v2.0 by JaisorGadgets", 0.8, 5.65)]  # text, height, y
 
 
 def mm(v):
@@ -182,7 +182,7 @@ def main():
 
     board = pcbnew.NewBoard(pcb_path)
     tb = board.GetTitleBlock()
-    tb.SetTitle("Mini PDB")
+    tb.SetTitle("SolarMeshMiniPDB")
     tb.SetRevision("0.2")
     tb.SetDate("2026-10-30")
     tb.SetComment(0, "Solar -> CN3163 -> battery; battery -> switch -> load. Wire pads, 20 x 12 mm, 2x M2")
@@ -263,10 +263,12 @@ def main():
         for x in (HOLE_INSET, W - HOLE_INSET):
             silk_text(board, text, x, y, height, thickness=0.2)
     # Back: module ID, shrunk if needed to stay clear of the holes (2.2 mm, 0.3 mm margin).
+    # A line entirely below the holes may use the board width less 1 mm a side.
     for text, height, y in BACK_TEXT:
         t = silk_text(board, text, W / 2, y, height, layer=pcbnew.B_SilkS, thickness=0.1)
         width = pcbnew.ToMM(t.GetEffectiveTextShape().BBox().GetWidth())
-        room = W - 2 * (HOLE_INSET + 1.1 + 0.3)
+        beside_holes = abs(y - PAD_ROW_Y) < 1.1 + 0.3 + height / 2
+        room = W - 2 * (HOLE_INSET + 1.1 + 0.3) if beside_holes else W - 2 * 1.0
         if width > room:
             s = height * room / width
             t.SetTextSize(pcbnew.VECTOR2I(mm(s), mm(s)))

@@ -1,6 +1,6 @@
-# Mini PDB
+# SolarMeshMiniPDB
 
-Minimal power distribution board with a solar charger. It has solder pads for a 5 V solar panel, a 1S Li-ion battery, a load, and an external switch that breaks the positive wire to the load. A CN3163 charges the battery from the panel at up to 1 A, like the SD05CRMA module, with the same two status LEDs: red while charging, green when the battery is full. 20 × 12 mm, two M2 mounting holes.
+Minimal solar charger and power distribution board, sized to power a mini handheld LoRa mesh node. It has solder pads for a 5 V solar panel, a 1S Li-ion battery, a load, and an external switch that breaks the positive wire to the load. A CN3163 charges the battery from the panel at up to 1 A, like the SD05CRMA module, with the same two status LEDs: red while charging, green when the battery is full. 20 × 12 mm, two M2 mounting holes.
 
 ![Top](docs/images/pcb-top.png)
 
@@ -36,7 +36,7 @@ The back is a ground plane with three jumpers (solar input, battery, switched ou
 
 ## Fabrication
 
-Upload `output/fab/MiniPDB_v2.0_gerbers.zip` (Gerbers incl. solder paste, drill files, job file) to the board house: 2 layers, 1.6 mm, 1 oz copper. The zip isn't tracked in git; regenerate it with the commands in `CLAUDE.md`.
+Upload `output/fab/SolarMeshMiniPDB_v2.0_gerbers.zip` (Gerbers incl. solder paste, drill files, job file) to the board house: 2 layers, 1.6 mm, 1 oz copper. The zip isn't tracked in git; regenerate it with the commands in `CLAUDE.md`.
 
 ## Regenerating the design
 

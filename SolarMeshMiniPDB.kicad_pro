@@ -492,7 +492,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "MiniPDB.kicad_pro",
+    "filename": "SolarMeshMiniPDB.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -660,8 +660,8 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "MiniPDB.kicad_sch",
-        "name": "MiniPDB",
+        "filename": "SolarMeshMiniPDB.kicad_sch",
+        "name": "SolarMeshMiniPDB",
         "uuid": "00000000-0000-0000-0000-000000000000"
       }
     ],
