@@ -18,7 +18,7 @@ KiCad 10 project for a minimal solar charger and power distribution board, sized
 
 ## Status
 
-Schematic and board complete. ERC 0 items (all severities); DRC 0 violations, 0 unconnected, 0 schematic-parity issues. Gerber package generated (see **Fabrication**). Not yet: BOM/CPL for assembly, LCSC part numbers, a panel file, bench test of the charger.
+Schematic and board complete. ERC 0 items (all severities); DRC 0 violations, 0 unconnected, 0 schematic-parity issues. Fabrication package generated: Gerbers, drill, BOM and CPL with LCSC numbers for every line (see **Fabrication**). Not yet: a panel file, bench test of the charger.
 
 ## Circuit
 
@@ -105,22 +105,39 @@ KiCad has no 3D model for the CN3163's footprint variant, so the renders show on
 
 ## Fabrication
 
-`output/fab/SolarMeshMiniPDB_v2.0_gerbers.zip` (gitignored; attach to a release tag) contains:
-- 8 Gerber X2 layers: F/B copper, F.Paste, F/B mask, F/B silkscreen, Edge.Cuts.
-- The Gerber job file.
-- Separate PTH/NPTH Excellon drill files and drill maps.
+Package in `output/fab/` (gitignored; attach to a release tag):
+- `SolarMeshMiniPDB_v2.0_gerbers.zip`: 8 Gerber X2 layers (F/B copper, F.Paste, F/B mask, F/B silkscreen, Edge.Cuts), the Gerber job file, separate PTH/NPTH Excellon drill files and drill maps.
+- `SolarMeshMiniPDB_v2.0_BOM.csv` / `_CPL.csv`: JLCPCB format. 6 BOM lines / 8 placed parts, top side only. The J pads and H holes are left out by their `exclude_from_bom` / `exclude_from_pos_files` flags.
+- `FAB_NOTES.txt`: order settings and assembly cautions.
+
+`tools/fab-package.js` builds the BOM/CPL from KiCad's CSVs, writes the notes and zips the Gerbers. Its `PART` table holds the LCSC numbers, each checked on jlcpcb.com/partdetail in Oct. 2026:
+
+| Refs | LCSC | Part | Library |
+|---|---|---|---|
+| U1 | C559031 | CN3163 (Consonance, ESOP-8) | Extended |
+| R1 | C22765 | UNI-ROYAL 0603WAF1201T5E, 1.2k 1% | |
+| R2, R3 | C11702 | UNI-ROYAL 0402WGF1001TCE, 1k 1% | |
+| C1, C2 | C19702 | Samsung CL10A106KP8NNNC, 10µF 10V X5R | |
+| D1 | C130719 | NationStar NCD0402R1, red | Extended |
+| D2 | C130723 | NationStar NCD0402G1, emerald green 520 nm, Vf 2.6–3.6 V | Extended |
+
+The JLCPCB pages didn't show Basic/Extended for the passives; they are the parts usually in the Basic library, so check that at order time. CPL rotations are KiCad's, with no per-package corrections; check U1 (pin 1 top-left) and the LED cathodes (pad 1, toward U1) in the assembler's preview.
 
 Checked:
 - The job file says 2 layers / 1.6 mm / 20 × 12 mm (20.05 × 12.05 including the outline stroke).
 - PTH = 17 × 0.3 mm vias; NPTH = 2 × 2.2 mm.
+- CPL coordinates are absolute, like the Gerbers (outline X 100–120, Y −100 to −112; KiCad flips Y in both).
 
-Order settings: 2 layers, FR-4 1.6 mm, 1 oz copper, min track/space 0.25/0.2 mm, min drill 0.3 mm. Assembly is top side only: U1, R1–R3, C1, C2, D1, D2. A BOM/CPL for JLCPCB-style assembly is not generated yet.
+Order settings: 2 layers, FR-4 1.6 mm, 1 oz copper, min track/space 0.25/0.2 mm, min drill 0.3 mm.
 
 Regenerate (after DRC is clean):
 
 ```bash
 OUT=output/fab
-kicad-cli pcb export gerbers --layers F.Cu,B.Cu,F.Paste,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts --subtract-soldermask --check-zones -o $OUT/gerbers SolarMeshMiniPDB.kicad_pcb
-kicad-cli pcb export drill --format excellon --excellon-units mm --excellon-zeros-format decimal --drill-origin absolute --excellon-separate-th --generate-map --map-format gerberx2 -o $OUT/gerbers/ SolarMeshMiniPDB.kicad_pcb
-python -c "import zipfile,os; z=zipfile.ZipFile('$OUT/SolarMeshMiniPDB_v2.0_gerbers.zip','w',zipfile.ZIP_DEFLATED); [z.write(os.path.join('$OUT/gerbers',n),n) for n in sorted(os.listdir('$OUT/gerbers'))]"
+P=SolarMeshMiniPDB
+kicad-cli pcb export gerbers --layers F.Cu,B.Cu,F.Paste,F.Silkscreen,B.Silkscreen,F.Mask,B.Mask,Edge.Cuts --subtract-soldermask --check-zones -o $OUT/gerbers $P.kicad_pcb
+kicad-cli pcb export drill --format excellon --excellon-units mm --excellon-zeros-format decimal --drill-origin absolute --excellon-separate-th --generate-map --map-format gerberx2 -o $OUT/gerbers/ $P.kicad_pcb
+kicad-cli pcb export pos --format csv --units mm --side both -o $OUT/pos-kicad.csv $P.kicad_pcb
+kicad-cli sch export bom --fields 'Value,Reference,Footprint,${QUANTITY}' --labels 'Comment,Designator,Footprint,Qty' --group-by 'Value,Footprint' --ref-range-delimiter '' --exclude-dnp -o $OUT/bom-kicad.csv $P.kicad_sch
+node tools/fab-package.js $OUT
 ```

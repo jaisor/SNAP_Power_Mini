@@ -36,7 +36,16 @@ The back is a ground plane with three jumpers (solar input, battery, switched ou
 
 ## Fabrication
 
-Upload `output/fab/SolarMeshMiniPDB_v2.0_gerbers.zip` (Gerbers incl. solder paste, drill files, job file) to the board house: 2 layers, 1.6 mm, 1 oz copper. The zip isn't tracked in git; regenerate it with the commands in `CLAUDE.md`.
+The package is generated into `output/fab/`. It isn't tracked in git; regenerate it with the commands in `CLAUDE.md`.
+
+| File | Contents |
+|---|---|
+| `SolarMeshMiniPDB_v2.0_gerbers.zip` | Upload this to the board house: Gerbers incl. solder paste, drill files, job file. 2 layers, 1.6 mm, 1 oz copper |
+| `SolarMeshMiniPDB_v2.0_BOM.csv` | BOM in JLCPCB format with LCSC part numbers for every line |
+| `SolarMeshMiniPDB_v2.0_CPL.csv` | Pick-and-place file, top side only, same coordinates as the Gerbers |
+| `FAB_NOTES.txt` | Order settings and assembly cautions |
+
+The CN3163 (C559031) and the two LEDs are JLCPCB Extended parts. Check the rotation of U1 and the LED polarity in the assembler's preview before ordering. The wire pads and mounting holes aren't parts, so they're not in the BOM or placement file.
 
 ## Regenerating the design
 
