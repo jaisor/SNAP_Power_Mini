@@ -18,6 +18,21 @@ The charger feeds the battery directly, so the battery keeps charging with the s
 
 **Battery thermistor (JP2):** charging works without a thermistor: JP2, the tiny pad pair just left of the IC's top-left pin, is closed by a copper link and switches temperature sensing off. To use one, solder a 10 kΩ B3950 NTC (taped to the cell) on the NTC pads and cut JP2's link with a knife. The charger then only charges between about 1 °C and 46 °C. Don't fit the NTC without cutting JP2, or the sensing stays off.
 
+## Dimensions
+
+| | |
+|---|---|
+| Board outline | 14.4 × 12.2 mm (0.57 × 0.48 in), square corners |
+| Board thickness | 1.6 mm |
+| Overall thickness | about 3.4 mm with parts (the CN3163 is the tallest at up to 1.75 mm), plus your wires and solder |
+| Wire pads | 1.4 × 1.5 mm, 2 mm apart centre to centre |
+| Pad rows | centres 1.3 mm in from the top and bottom edges; pads start 0.55 mm from the edge |
+| Top row, from the left edge | NTC 2.2 and 4.2 mm, OUT − 6.2 and + 8.2 mm, SW 10.2 and 12.2 mm |
+| Bottom row, from the left edge | SOL + 1.25 and − 3.25 mm, BAT + 11.15 and − 13.15 mm |
+| Mounting holes | none |
+
+The width and height are also marked on the top and bottom pictures.
+
 ## Specifications
 
 - Board: 14.4 × 12.2 mm, 1.6 mm FR-4, 2 layers, square corners (V-score panel friendly). No mounting holes

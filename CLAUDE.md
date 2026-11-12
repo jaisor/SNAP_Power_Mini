@@ -112,10 +112,11 @@ Images:
 
 ```bash
 kicad-cli sch export svg --exclude-drawing-sheet -o docs/images SNAP_Power_Mini.kicad_sch   # then rename SNAP_Power_Mini.svg -> schematic.svg
-kicad-cli pcb render --side top --quality high -w 1600 -h 1000 -o docs/images/pcb-top.png SNAP_Power_Mini.kicad_pcb
-kicad-cli pcb render --side bottom --quality high -w 1600 -h 1000 -o docs/images/pcb-bottom.png SNAP_Power_Mini.kicad_pcb
+"C:/Program Files/KiCad/10.0/bin/python.exe" tools/render-images.py   # pcb-top.png and pcb-bottom.png, with the board's width and height drawn on
 kicad-cli pcb render --side top --quality high --rotate "-40,0,25" --perspective -w 1600 -h 1000 -o docs/images/pcb-iso.png SNAP_Power_Mini.kicad_pcb
 ```
+
+`tools/render-images.py` runs `kicad-cli pcb render` for both sides, cuts the board out of the render (dropping the soft shadow, so via holes come out transparent), and draws dimension lines in mid grey on a transparent canvas so they read on GitHub's light and dark pages. The sizes are read from the Edge.Cuts outline, not typed in. The README's Dimensions table is hand-written: update it when the board size or pad positions change. `pcb-iso.png` is plain and not used in the README.
 
 KiCad has no 3D model for the CN3163's footprint variant, so the renders show only its pads.
 
