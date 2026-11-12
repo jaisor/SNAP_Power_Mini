@@ -1,4 +1,4 @@
-# SolarMeshMiniPDB
+# SNAP Mini Power Controller
 
 Minimal solar charger and power distribution board, sized to power a mini handheld LoRa mesh node. It has solder pads for a 5 V solar panel, a 1S Li-ion battery, a load, and an external switch that breaks the positive wire to the load. A CN3163 charges the battery from the panel at up to 1 A, like the SD05CRMA module, with the same two status LEDs: red while charging, green when the battery is full. 20 × 12 mm, two M2 mounting holes.
 
@@ -40,9 +40,9 @@ The package is generated into `output/fab/`. It isn't tracked in git; regenerate
 
 | File | Contents |
 |---|---|
-| `SolarMeshMiniPDB_v2.0_gerbers.zip` | Upload this to the board house: Gerbers incl. solder paste, drill files, job file. 2 layers, 1.6 mm, 1 oz copper |
-| `SolarMeshMiniPDB_v2.0_BOM.csv` | BOM in JLCPCB format with LCSC part numbers for every line |
-| `SolarMeshMiniPDB_v2.0_CPL.csv` | Pick-and-place file, top side only, same coordinates as the Gerbers |
+| `SNAP_Power_Mini_v2.0_gerbers.zip` | Upload this to the board house: Gerbers incl. solder paste, drill files, job file. 2 layers, 1.6 mm, 1 oz copper |
+| `SNAP_Power_Mini_v2.0_BOM.csv` | BOM in JLCPCB format with LCSC part numbers for every line |
+| `SNAP_Power_Mini_v2.0_CPL.csv` | Pick-and-place file, top side only, same coordinates as the Gerbers |
 | `FAB_NOTES.txt` | Order settings and assembly cautions |
 
 The CN3163 (C559031) and the two LEDs are JLCPCB Extended parts. Check the rotation of U1 and the LED polarity in the assembler's preview before ordering. The wire pads and mounting holes aren't parts, so they're not in the BOM or placement file.

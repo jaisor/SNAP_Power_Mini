@@ -1,4 +1,4 @@
-// Generates the SolarMeshMiniPDB schematic for KiCad 10: solar panel, battery, switch and load wire
+// Generates the SNAP Mini Power Controller schematic for KiCad 10: solar panel, battery, switch and load wire
 // pads, a CN3163 linear solar charger with CHRG/DONE LEDs, the switch in series with battery +
 // toward the load, plus two M2 mounting holes.
 // Usage: node tools/gen-schematic.js [project dir, default: repo root]
@@ -8,11 +8,11 @@ const path = require("path");
 
 const LIBDIR = "C:/Program Files/KiCad/10.0/share/kicad/symbols";
 const PROJ = process.argv[2] || ".";
-const NAME = "SolarMeshMiniPDB";
+const NAME = "SNAP_Power_Mini";
 const SCH = path.join(PROJ, NAME + ".kicad_sch");
 // Deterministic UUIDs keyed by what an item is (symbol ref, wire endpoints, ...), so
 // regenerating keeps symbol identities stable for the PCB links and keeps git diffs small.
-// Seeded with the project's original name so the rename to SolarMeshMiniPDB kept them.
+// Seeded with the project's original name so the later renames kept them.
 const UUID_SEED = "MiniPDB";
 function uuid(key) {
   const h = crypto.createHash("sha1").update(`${UUID_SEED}/${key}`).digest("hex");
@@ -120,7 +120,7 @@ const SYMS = {};
 function useSym(libId) {
   if (SYMS[libId]) return SYMS[libId];
   const [lib, name] = libId.split(":");
-  const text = lib === "SolarMeshMiniPDB" ? CN3163.replace('(symbol "CN3163"', '(symbol "SolarMeshMiniPDB:CN3163"') : libSymbol(lib, name);
+  const text = lib === "SNAP_Power_Mini" ? CN3163.replace('(symbol "CN3163"', '(symbol "SNAP_Power_Mini:CN3163"') : libSymbol(lib, name);
   return (SYMS[libId] = { text, pins: pinsOf(text) });
 }
 
@@ -165,8 +165,8 @@ function flag(at, rot) {
   flgN++;
   return place(`#FLG0${String(flgN).padStart(2, "0")}`, "power:PWR_FLAG", at.x, at.y, { value: "PWR_FLAG", power: true, rot });
 }
-// Two SMD wire pads per footprint (pad 1 on top), project library SolarMeshMiniPDB.pretty.
-const PADS = "SolarMeshMiniPDB:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm";
+// Two SMD wire pads per footprint (pad 1 on top), project library SNAP_Power_Mini.pretty.
+const PADS = "SNAP_Power_Mini:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm";
 const FP = {
   r0603: "Resistor_SMD:R_0603_1608Metric",
   c0603: "Capacitor_SMD:C_0603_1608Metric",
@@ -182,7 +182,7 @@ const FP = {
 // LEDs from VIN, so they light only while the panel is delivering power.
 const CH = 40.64; // charger block top rail
 const J4 = placeByPin("J4", "Connector_Generic:Conn_01x02", "1", P(27.94, CH), { mirror: "y", value: "SOLAR", fp: PADS, noBom: true });
-const U1 = place("U1", "SolarMeshMiniPDB:CN3163", 73.66, CH + 5.08, { value: "CN3163" });
+const U1 = place("U1", "SNAP_Power_Mini:CN3163", 73.66, CH + 5.08, { value: "CN3163" });
 const C1 = placeByPin("C1", "Device:C", "1", P(45.72, CH), { value: "10uF/10V", fp: FP.c0603, labelLeft: true });
 // The panel only reaches VIN through a passive pad: flag it for ERC.
 const vinFlag = P(40.64, CH);
@@ -250,7 +250,7 @@ for (let i = 0; i < 2; i++)
 TEXTS.push({
   at: P(50.8, 101.6),
   text: [
-    "SolarMeshMiniPDB: solar charger + power distribution for a handheld LoRa mesh node, 20 x 12 mm, two M2 holes. No net carries more than 1 A.",
+    "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 20 x 12 mm, two M2 holes. No net carries more than 1 A.",
     "- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.",
     "- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel",
     "  sags toward 4.4V and by thermal regulation (~130C die). TEMP grounded (no NTC).",
@@ -288,7 +288,7 @@ function emitPart(p) {
   if (o.power) {
     refAt = [x, y]; valAt = [x, y + 3.81];
     hideVal = p.libId === "power:PWR_FLAG";
-  } else if (p.libId === "SolarMeshMiniPDB:CN3163") {
+  } else if (p.libId === "SNAP_Power_Mini:CN3163") {
     refAt = [x - 7.62, y - 8.89]; valAt = [x + 7.62, y - 8.89];
   } else if (p.libId.startsWith("Device") && horiz) {
     // Horizontal: reference above, value below (an LED's light arrows hang below its body).
@@ -308,7 +308,7 @@ function emitPart(p) {
   }
   const side = o.labelLeft ? "right" : "left";
   const just =
-    p.libId === "SolarMeshMiniPDB:CN3163" ? ["left", "right"]
+    p.libId === "SNAP_Power_Mini:CN3163" ? ["left", "right"]
     : p.libId.startsWith("Device") && !horiz ? [side, side]
     : p.libId.startsWith("Connector") && p.rot === 90 ? ["left", "left"]
     : [];
@@ -353,7 +353,7 @@ const out = [
 	(uuid "${sheetUuid}")
 	(paper "A4")
 	(title_block
-		(title "SolarMeshMiniPDB")
+		(title "SNAP Mini Power Controller")
 		(date "2026-10-30")
 		(rev "0.2")
 		(comment 1 "Solar -> CN3163 -> battery; battery -> switch -> load. Wire pads, 20 x 12 mm, 2x M2")
@@ -379,14 +379,14 @@ fs.writeFileSync(SCH, out.join("\n"));
 
 // Project symbol library + table so the CN3163 is reusable from the symbol chooser.
 fs.writeFileSync(
-  path.join(PROJ, "SolarMeshMiniPDB.kicad_sym"),
+  path.join(PROJ, "SNAP_Power_Mini.kicad_sym"),
   `(kicad_symbol_lib\n\t(version 20251024)\n\t(generator "kicad_symbol_editor")\n\t(generator_version "10.0")\n${CN3163}\n)\n`
 );
 const tbl = path.join(PROJ, "sym-lib-table");
 if (!fs.existsSync(tbl))
   fs.writeFileSync(
     tbl,
-    `(sym_lib_table\n\t(version 7)\n\t(lib (name "SolarMeshMiniPDB")(type "KiCad")(uri "\${KIPRJMOD}/SolarMeshMiniPDB.kicad_sym")(options "")(descr "Project-specific symbols"))\n)\n`
+    `(sym_lib_table\n\t(version 7)\n\t(lib (name "SNAP_Power_Mini")(type "KiCad")(uri "\${KIPRJMOD}/SNAP_Power_Mini.kicad_sym")(options "")(descr "Project-specific symbols"))\n)\n`
   );
 
 for (const p of PARTS.filter((p) => !p.o.power))

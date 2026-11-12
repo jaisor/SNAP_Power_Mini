@@ -492,7 +492,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "SolarMeshMiniPDB.kicad_pro",
+    "filename": "SNAP_Power_Mini.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -660,8 +660,8 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "SolarMeshMiniPDB.kicad_sch",
-        "name": "SolarMeshMiniPDB",
+        "filename": "SNAP_Power_Mini.kicad_sch",
+        "name": "SNAP_Power_Mini",
         "uuid": "00000000-0000-0000-0000-000000000000"
       }
     ],

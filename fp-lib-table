@@ -1,4 +1,4 @@
 (fp_lib_table
 	(version 7)
-	(lib (name "SolarMeshMiniPDB")(type "KiCad")(uri "${KIPRJMOD}/SolarMeshMiniPDB.pretty")(options "")(descr "Project-specific footprints"))
+	(lib (name "SNAP_Power_Mini")(type "KiCad")(uri "${KIPRJMOD}/SNAP_Power_Mini.pretty")(options "")(descr "Project-specific footprints"))
 )

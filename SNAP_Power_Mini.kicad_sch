@@ -5,7 +5,7 @@
 	(uuid "9f8e6b92-c8bc-4846-8b06-b71484d019ca")
 	(paper "A4")
 	(title_block
-		(title "SolarMeshMiniPDB")
+		(title "SNAP Mini Power Controller")
 		(date "2026-10-30")
 		(rev "0.2")
 		(comment 1 "Solar -> CN3163 -> battery; battery -> switch -> load. Wire pads, 20 x 12 mm, 2x M2")
@@ -169,7 +169,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "SolarMeshMiniPDB:CN3163"
+		(symbol "SNAP_Power_Mini:CN3163"
 			(pin_names
 				(offset 1.016)
 			)
@@ -1608,7 +1608,7 @@
 		)
 		(uuid "ebe4d1d2-5b9f-4c47-a1d6-615bd92aba8f")
 	)
-	(text "SolarMeshMiniPDB: solar charger + power distribution for a handheld LoRa mesh node, 20 x 12 mm, two M2 holes. No net carries more than 1 A.\n- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.\n- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel\n  sags toward 4.4V and by thermal regulation (~130C die). TEMP grounded (no NTC).\n- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Both fed from VIN: dark without sun.\n- J1 BATTERY: 1S Li-ion, 1 = BAT+, 2 = GND. The charger feeds BAT+ directly, so the cell charges with the switch open.\n- J2 SWITCH: off-board SPST in series with battery + toward the load. 1 = BAT+, 2 = VOUT.\n- J3 LOAD: 1 = VOUT (switched battery +), 2 = GND."
+	(text "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 20 x 12 mm, two M2 holes. No net carries more than 1 A.\n- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.\n- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel\n  sags toward 4.4V and by thermal regulation (~130C die). TEMP grounded (no NTC).\n- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Both fed from VIN: dark without sun.\n- J1 BATTERY: 1S Li-ion, 1 = BAT+, 2 = GND. The charger feeds BAT+ directly, so the cell charges with the switch open.\n- J2 SWITCH: off-board SPST in series with battery + toward the load. 1 = BAT+, 2 = VOUT.\n- J3 LOAD: 1 = VOUT (switched battery +), 2 = GND."
 		(exclude_from_sim no)
 		(at 50.8 101.6 0)
 		(effects
@@ -1705,7 +1705,7 @@
 				)
 			)
 		)
-		(property "Footprint" "SolarMeshMiniPDB:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
+		(property "Footprint" "SNAP_Power_Mini:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
 			(at 22.86 40.64 0)
 			(hide yes)
 			(effects
@@ -1739,7 +1739,7 @@
 			(uuid "00ee8cdf-9cf7-428e-8686-542c51e01876")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "J4")
 					(unit 1)
@@ -1748,7 +1748,7 @@
 		)
 	)
 	(symbol
-		(lib_id "SolarMeshMiniPDB:CN3163")
+		(lib_id "SNAP_Power_Mini:CN3163")
 		(at 73.66 45.72 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -1829,7 +1829,7 @@
 			(uuid "9c7bf5d3-2129-4015-b7c6-f867acdb9c8f")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "U1")
 					(unit 1)
@@ -1898,7 +1898,7 @@
 			(uuid "13c886e9-d6be-475e-81eb-315fa0400450")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "C1")
 					(unit 1)
@@ -1964,7 +1964,7 @@
 			(uuid "c343c48e-403b-475e-9499-b0e539d84316")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#FLG001")
 					(unit 1)
@@ -2029,7 +2029,7 @@
 			(uuid "5189d27e-8b69-4213-ae2a-1c9d755e83ef")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR001")
 					(unit 1)
@@ -2094,7 +2094,7 @@
 			(uuid "e7e38f5e-8ce8-4118-ac79-211b4ad27041")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR002")
 					(unit 1)
@@ -2159,7 +2159,7 @@
 			(uuid "e9937dd7-b70e-4367-8822-152d25114122")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR003")
 					(unit 1)
@@ -2226,7 +2226,7 @@
 			(uuid "57dd7d31-e296-4254-9854-07decbb19b8d")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "R1")
 					(unit 1)
@@ -2291,7 +2291,7 @@
 			(uuid "ff74e25d-1366-4109-b110-cedaece404dc")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR004")
 					(unit 1)
@@ -2356,7 +2356,7 @@
 			(uuid "f32ecb3e-aaf8-4e65-bb70-13071224e334")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR005")
 					(unit 1)
@@ -2425,7 +2425,7 @@
 			(uuid "288201ed-a209-4c64-9845-d54e31af515d")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "C2")
 					(unit 1)
@@ -2490,7 +2490,7 @@
 			(uuid "7f1ccdab-7db9-47d7-8dd5-b8af0af4b99a")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR006")
 					(unit 1)
@@ -2557,7 +2557,7 @@
 			(uuid "220b6217-2d27-4da9-a804-60fc322ee5ac")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "D1")
 					(unit 1)
@@ -2624,7 +2624,7 @@
 			(uuid "25e1f145-3cef-4b6a-a807-ae601eacefde")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "R2")
 					(unit 1)
@@ -2691,7 +2691,7 @@
 			(uuid "c3d7fb10-c88a-44b1-9534-870fa00b7350")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "D2")
 					(unit 1)
@@ -2758,7 +2758,7 @@
 			(uuid "d8bfdf2c-f7b1-4d8e-ac32-28f600c094a3")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "R3")
 					(unit 1)
@@ -2792,7 +2792,7 @@
 				)
 			)
 		)
-		(property "Footprint" "SolarMeshMiniPDB:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
+		(property "Footprint" "SNAP_Power_Mini:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
 			(at 50.8 76.2 0)
 			(hide yes)
 			(effects
@@ -2826,7 +2826,7 @@
 			(uuid "7023bae3-c867-4e7c-a7de-91c027da731e")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "J1")
 					(unit 1)
@@ -2861,7 +2861,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "SolarMeshMiniPDB:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
+		(property "Footprint" "SNAP_Power_Mini:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
 			(at 76.2 66.04 0)
 			(hide yes)
 			(effects
@@ -2895,7 +2895,7 @@
 			(uuid "8515a46c-183e-4044-847d-f9b9f66fcae5")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "J2")
 					(unit 1)
@@ -2928,7 +2928,7 @@
 				)
 			)
 		)
-		(property "Footprint" "SolarMeshMiniPDB:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
+		(property "Footprint" "SNAP_Power_Mini:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm"
 			(at 101.6 76.2 0)
 			(hide yes)
 			(effects
@@ -2962,7 +2962,7 @@
 			(uuid "32db0e8d-6488-4775-ade0-7e8cdbc85fc3")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "J3")
 					(unit 1)
@@ -3027,7 +3027,7 @@
 			(uuid "070009a2-3913-44df-a28a-fb913674714c")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR007")
 					(unit 1)
@@ -3092,7 +3092,7 @@
 			(uuid "983e140e-f339-4feb-97ea-ac1f9f5c3b46")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR008")
 					(unit 1)
@@ -3158,7 +3158,7 @@
 			(uuid "645fe58f-ca87-427c-a72d-2888f2cba87b")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#FLG002")
 					(unit 1)
@@ -3223,7 +3223,7 @@
 			(uuid "461a06de-a48d-4704-812e-28a3c6d7c02c")
 		)
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "#PWR009")
 					(unit 1)
@@ -3285,7 +3285,7 @@
 		)
 
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "H1")
 					(unit 1)
@@ -3347,7 +3347,7 @@
 		)
 
 		(instances
-			(project "SolarMeshMiniPDB"
+			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "H2")
 					(unit 1)
