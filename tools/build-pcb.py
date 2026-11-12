@@ -1,17 +1,22 @@
 # Builds the whole SNAP Mini Power Controller board from the schematic netlist: footprints placed and linked to
 # their symbols, hand-placed tracks and vias, GND pours on both layers kept clear of the M2
-# holes, silkscreen, and a square-cornered 20 x 12 mm outline (V-score panel friendly).
+# holes, silkscreen, and a square-cornered 20 x 15 mm outline (V-score panel friendly).
 # Run with KiCad's Python:
 #   "C:\Program Files\KiCad\10.0\bin\python.exe" tools/build-pcb.py <netlist.xml> [project dir, default: repo root]
 # Netlist: kicad-cli sch export netlist --format kicadxml -o output/net.xml SNAP_Power_Mini.kicad_sch
 #
-# Layout (top view). Top band: M2 holes and four wire-pad pairs, + row on top:
-#   (H1)  SOL+ BAT+=SW_A  OUT+  (H2)      BAT+ = SW_A bridged on F.Cu
-#         SOL- BAT- SW_B  OUT-            SOL- = BAT- bridged on F.Cu
-# Bottom band: R1 (ISET) and C1 (VIN) left of U1 CN3163; right of it the status LEDs in two
-# rows (D1 red + R2 on CHRG, D2 green + R3 on DONE, 0402) above C2 (BAT).
-# B.Cu jumpers: SOL+ -> C1/VIN pin, BAT+ -> FB and BAT pins, SW_B -> OUT+.
-# F.Cu: VIN to the LED resistors runs between the pad rows and the IC.
+# Layout (top view). Top band, between the corner M2 holes:
+#   (H1)  -BAT+  SW  +OUT-  (H2)     J1, J2, J3 pairs; SW_B = OUT+ bridged on F.Cu
+# Below them Q1 AO3401A (reverse-battery guard): battery pad -> drain, source -> SW_A and BAT+.
+# Middle band: R1 (ISET) and C1 (VIN) left of U1 CN3163; right of it the status LEDs in two
+# rows (D1 red + R2 on CHRG, D2 green + R3 on DONE, 0402) above C2 (BAT); JP1 (LED enable,
+# normally open) above them, between the VIN bus and the LED resistors.
+# Under each hole a column of two SOD-323 Schottkys, anodes toward the ends of the column,
+# cathodes joined in the middle (VIN).
+# Bottom edge: J4, S1+ S2+ GND S3+ S4+ spread across the full width, double-size return.
+# F.Cu: VIN bus straight across from the left diode column to the right one, between Q1 and the
+# IC; S1 and S4 run straight down from the lower diodes.
+# B.Cu jumpers: S2 and S3 down from the upper diodes, BAT+ -> FB and BAT pins, VIN -> C1/pin 4.
 # No net carries more than 1 A: 0.4 mm power tracks, 0.3 mm vias.
 import math
 import os
@@ -23,21 +28,30 @@ import pcbnew
 FPDIR = "C:/Program Files/KiCad/10.0/share/kicad/footprints"
 NAME = "SNAP_Power_Mini"
 ORIGIN = (100.0, 100.0)  # board top-left in the editor, mm
-W, H = 20.0, 12.0  # board size, mm
+W, H = 20.0, 15.0  # board size, mm
 CORNER = 0.0  # outline corner radius, mm; 0 = sharp corners so panels can be V-scored
-PAD_ROW_Y = 3.35  # centre line of the wire-pad pairs (pads at y -/+ 1.75)
-HOLE_INSET = 2.3  # M2 hole centre distance from the short edges, mm
-HOLE_KEEPOUT = 2.2  # no copper within this radius of a hole centre (screw head / standoff)
+HOLE_XY = 2.0  # M2 hole centres 2 mm in from the top and side edges
+HOLE_R = 1.05  # 2.1 mm drill
+HOLE_KEEPOUT = 2.0  # no copper within this radius of a hole centre (4 mm M2 head / standoff)
+TOP_ROW_Y = 1.3  # J1-J3 pad centres (pads 1.5 mm tall)
+SOLAR_ROW_Y = H - 1.3  # J4 pad centres, 0.55 mm copper margin to the bottom edge
 ZONE_CLEAR = 0.25
 
 # ref: (x, y, rotation) of the footprint origin, mm from the board's top-left corner.
 PLACEMENT = {
-    "H1": (HOLE_INSET, PAD_ROW_Y, 0),
-    "H2": (W - HOLE_INSET, PAD_ROW_Y, 0),
-    "J4": (6.1, PAD_ROW_Y, 0),  # SOLAR:   1 = VIN (top), 2 = GND
-    "J1": (8.7, PAD_ROW_Y, 0),  # BATTERY: 1 = BAT+ (top), 2 = GND
-    "J2": (11.3, PAD_ROW_Y, 0),  # SWITCH:  1 = BAT+ (top), 2 = VOUT
-    "J3": (13.9, PAD_ROW_Y, 0),  # LOAD:    1 = VOUT (top), 2 = GND
+    "H1": (HOLE_XY, HOLE_XY, 0),
+    "H2": (W - HOLE_XY, HOLE_XY, 0),
+    "J1": (6.0, TOP_ROW_Y, 180),  # BATTERY: 2 = GND (x 5), 1 = BAT_IN (x 7)
+    "J2": (10.0, TOP_ROW_Y, 0),  # SWITCH:  1 = BAT+ (x 9), 2 = VOUT (x 11)
+    "J3": (14.0, TOP_ROW_Y, 0),  # LOAD:    1 = VOUT (x 13), 2 = GND (x 15)
+    # Drain (pin 3) left under the battery pad, source (2) up under SW_A, gate (1) GND
+    "Q1": (8.0, 4.75, 180),
+    "J4": (10.0, SOLAR_ROW_Y, 0),  # SOLAR: S1 1.25, S2 5.275, GND 10 (2.8 mm wide), S3 14.725, S4 18.75
+    # Schottkys, cathode (pad 1) toward the middle of each column
+    "D4": (1.5, 5.7, 90),  # S2, anode up
+    "D3": (1.5, 9.05, 270),  # S1, anode down
+    "D5": (18.7, 5.7, 90),  # S3, anode up
+    "D6": (18.7, 9.05, 270),  # S4, anode down
     "U1": (10.0, 9.25, 0),  # CN3163: pins 1-4 down the left (VIN = 4), 5-8 up the right (BAT = 5)
     "R1": (4.6, 8.615, 180),  # in line with ISET (pin 2); pad 1 toward the IC
     "C1": (4.7, 11.0, 180),  # VIN bypass next to pin 4; pad 1 toward the IC
@@ -46,30 +60,43 @@ PLACEMENT = {
     "R2": (16.7, 8.4, 0),
     "D2": (14.75, 9.6, 0),  # green, DONE: cathode (pad 1) toward pin 6
     "R3": (16.7, 9.6, 0),
+    "JP1": (16.0, 7.2, 180),  # pad 2 (VIN, left) up to the bus, pad 1 (LED_PWR, right) to R2/R3
 }
-PWR, SIG, GND_W = 0.4, 0.25, 0.3  # track widths, mm
+PWR, SIG, SOL, GND_W = 0.4, 0.25, 0.3, 0.3  # track widths, mm
 VIA = (0.6, 0.3)  # diameter, drill
 # Tracks: (net, layer, width, points). A point is (x, y) or (ref, pad) for that pad's centre.
 TRACKS = [
-    ("/BAT+", "F", 1.2, [("J1", "1"), ("J2", "1")]),
-    ("GND", "F", 1.2, [("J4", "2"), ("J1", "2")]),
-    # VIN: SOL+ -> B.Cu -> via between C1 and pin 4
-    ("/VIN", "B", PWR, [(5.6, 2.1), (5.6, 10.55), (6.2, 11.155)]),
-    ("/VIN", "F", PWR, [("C1", "1"), (6.2, 11.155), ("U1", "4")]),
-    # VIN for the LEDs: via on the SOL+ jumper, along F.Cu above the IC, down through R2/R3
-    ("/VIN", "F", SIG, [(5.6, 6.9), (5.8, 6.7), (17.21, 6.7), ("R2", "2"), ("R3", "2")]),
-    # BAT+: BAT+ pad -> B.Cu under the pads and down beside the IC to vias at pins 8 and 5,
-    # leaving F.Cu free for the CHRG/DONE tracks between them
-    ("/BAT+", "B", PWR, [(8.2, 2.1), (8.2, 6.9), (13.85, 6.9), (13.85, 11.155)]),
+    ("/VOUT", "F", 1.0, [("J2", "2"), ("J3", "1")]),
+    # Battery pad straight down to Q1's drain; Q1's source up to SW_A and across to a BAT+ via,
+    # then B.Cu down beside the IC to the vias at pins 8 and 5
+    ("/BAT_IN", "F", PWR, [("J1", "1"), ("Q1", "3")]),
+    ("/BAT+", "F", PWR, [("Q1", "2"), ("J2", "1")]),
+    ("/BAT+", "F", PWR, [("Q1", "2"), (13.4, 3.8), (13.85, 4.25), (13.85, 5.0)]),
+    ("/BAT+", "B", PWR, [(13.85, 5.0), (13.85, 11.155)]),
     ("/BAT+", "F", PWR, [("U1", "8"), (13.85, 7.345)]),
     ("/BAT+", "F", PWR, [("U1", "5"), (13.85, 11.155), ("C2", "1")]),
-    # Status LEDs: pin -> cathode, anode -> resistor -> VIN
+    # Panels: S1 and S4 straight down from the lower diodes; S2 and S3 on B.Cu from the upper ones
+    ("/SOL1", "F", SOL, [("D3", "2"), ("J4", "1")]),
+    ("/SOL4", "F", SOL, [("D6", "2"), ("J4", "4")]),
+    ("/SOL2", "F", SOL, [("D4", "2"), (2.7, 5.1)]),
+    ("/SOL2", "B", SOL, [(2.7, 5.1), (2.7, 12.3), (3.8, SOLAR_ROW_Y), ("J4", "2")]),
+    ("/SOL3", "F", SOL, [("D5", "2"), (17.6, 5.1)]),
+    ("/SOL3", "B", SOL, [(17.6, 5.1), (17.6, 12.3), (16.5, SOLAR_ROW_Y), ("J4", "3")]),
+    # VIN: cathode pairs joined, bus between Q1 and the IC with a stub down to JP1's VIN pad;
+    # B.Cu jumper to C1/pin 4
+    ("/VIN", "F", PWR, [("D4", "1"), ("D3", "1")]),
+    ("/VIN", "F", PWR, [("D5", "1"), ("D6", "1")]),
+    ("/VIN", "F", PWR, [("D4", "1"), (1.9, 6.4), (18.3, 6.4), ("D5", "1")]),
+    ("/VIN", "F", PWR, [(15.55, 6.4), ("JP1", "2")]),
+    ("/VIN", "F", PWR, [(5.6, 6.4), (5.6, 7.1)]),
+    ("/VIN", "B", PWR, [(5.6, 7.1), (5.6, 10.55), (6.2, 11.155)]),
+    ("/VIN", "F", PWR, [("C1", "1"), (6.2, 11.155), ("U1", "4")]),
+    # Status LEDs: JP1 -> resistors -> anodes; cathodes -> CHRG/DONE pins
+    ("/LED_PWR", "F", SIG, [("JP1", "1"), (17.21, 7.2), ("R2", "2"), ("R3", "2")]),
     ("Net-(D1-K)", "F", SIG, [("U1", "7"), (13.7, 8.615), ("D1", "1")]),
     ("Net-(D2-K)", "F", SIG, [("U1", "6"), (13.7, 9.885), ("D2", "1")]),
     ("Net-(D1-A)", "F", SIG, [("D1", "2"), ("R2", "1")]),
     ("Net-(D2-A)", "F", SIG, [("D2", "2"), ("R3", "1")]),
-    # VOUT: switch pad -> B.Cu -> load + pad
-    ("/VOUT", "B", PWR, [(11.3, 4.55), (13.9, 2.15)]),
     # ISET resistor, kept short (datasheet layout note 1)
     ("Net-(U1-ISET)", "F", SIG, [("R1", "1"), ("U1", "2")]),
     # GND: TEMP and GND into the exposed pad; R1/C1 returns to pin 3; C2 to a via
@@ -80,20 +107,23 @@ TRACKS = [
     ("GND", "F", PWR, [("C2", "2"), (16.9, 11.0)]),
 ]
 VIAS = {
-    "/VIN": [(5.6, 2.1), (5.6, 6.9), (6.2, 11.155)],
-    "/BAT+": [(8.2, 2.1), (13.85, 7.345), (13.85, 11.155)],
-    "/VOUT": [(11.3, 4.55), (13.9, 2.15)],
-    # J1.2 and J3.2 to the B.Cu pour, C2's return, and six thermal vias in U1's exposed pad
-    "GND": [(9.2, 4.6), (13.4, 4.6), (16.9, 11.0)]
+    "/VIN": [(5.6, 7.1), (6.2, 11.155)],
+    "/BAT+": [(13.85, 5.0), (13.85, 7.345), (13.85, 11.155)],
+    "/SOL2": [(2.7, 5.1), (5.275, SOLAR_ROW_Y)],
+    "/SOL3": [(17.6, 5.1), (14.725, SOLAR_ROW_Y)],
+    # Two vias in the shared panel return; one for BAT- (its F.Cu pour island left of Q1) and two
+    # by Q1's gate for OUT- and the gate; C2's return; six thermal vias in U1's exposed pad
+    "GND": [(9.6, SOLAR_ROW_Y), (10.4, SOLAR_ROW_Y), (4.8, 4.8), (10.3, 5.7), (11.1, 5.7), (16.9, 11.0)]
     + [(x, y) for x in (9.4, 10.6) for y in (8.15, 9.25, 10.35)],
 }
 
-# Silkscreen: column names in the gap between the pad rows, +/- beside each row at both ends.
-COLUMN_LABELS = {"J4": "SOL", "J1": "BAT", "J2": "SW", "J3": "OUT"}
+# Silkscreen: pair names under the top row, panel names over the solar row at the bottom edge.
+LABELS = [("-BAT+", 6.0, 2.7), ("SW", 10.0, 2.7), ("+OUT-", 14.0, 2.7),
+          ("S1+", 1.4, H - 2.58), ("S2+", 5.275, H - 2.58), ("GND", 10.0, H - 2.58), ("S3+", 14.725, H - 2.58), ("S4+", 18.6, H - 2.58)]
 LABEL_TEXT = 0.8
-ROW_MARKS = [("+", 0.85, 0.8), ("-", 6.0, 1.0)]  # text, y, height
-# Back: kept in the via-free bands at y 2.5-4.2 and 4.9-6.6.
-BACK_TEXT = [("JaisorGadgets v2.0", 0.9, PAD_ROW_Y), ("SNAP Mini Power Controller", 0.8, 5.65)]  # text, height, y
+# Back: the version between the holes and the name in the full-width band below them (clear of
+# the vias at y 4.8-5.7).
+BACK_TEXT = [("JaisorGadgets v2.0", 0.9, TOP_ROW_Y), ("SNAP Mini Power Controller", 0.8, 3.8)]  # text, height, y
 
 
 def mm(v):
@@ -185,7 +215,7 @@ def main():
     tb.SetTitle("SNAP Mini Power Controller")
     tb.SetRevision("0.2")
     tb.SetDate("2026-10-30")
-    tb.SetComment(0, "Solar -> CN3163 -> battery; battery -> switch -> load. Wire pads, 20 x 12 mm, 2x M2")
+    tb.SetComment(0, "4 solar inputs -> CN3163 -> Q1 -> battery; switch -> load. 20 x 15 mm")
 
     fps = {}
     for comp in root.iter("comp"):
@@ -257,18 +287,15 @@ def main():
     for ref in ("H1", "H2"):
         add_hole_keepout(board, *PLACEMENT[ref][:2])
 
-    for ref, text in COLUMN_LABELS.items():
-        silk_text(board, text, PLACEMENT[ref][0], PAD_ROW_Y, LABEL_TEXT, thickness=0.12)
-    for text, y, height in ROW_MARKS:
-        for x in (HOLE_INSET, W - HOLE_INSET):
-            silk_text(board, text, x, y, height, thickness=0.2)
-    # Back: module ID, shrunk if needed to stay clear of the holes (2.2 mm, 0.3 mm margin).
+    for text, x, y in LABELS:
+        silk_text(board, text, x, y, LABEL_TEXT, thickness=0.12)
+    # Back: module ID, shrunk if needed to stay clear of the holes (0.3 mm margin).
     # A line entirely below the holes may use the board width less 1 mm a side.
     for text, height, y in BACK_TEXT:
         t = silk_text(board, text, W / 2, y, height, layer=pcbnew.B_SilkS, thickness=0.1)
         width = pcbnew.ToMM(t.GetEffectiveTextShape().BBox().GetWidth())
-        beside_holes = abs(y - PAD_ROW_Y) < 1.1 + 0.3 + height / 2
-        room = W - 2 * (HOLE_INSET + 1.1 + 0.3) if beside_holes else W - 2 * 1.0
+        beside_holes = abs(y - HOLE_XY) < HOLE_R + 0.3 + height / 2
+        room = W - 2 * (HOLE_XY + HOLE_R + 0.3) if beside_holes else W - 2 * 1.0
         if width > room:
             s = height * room / width
             t.SetTextSize(pcbnew.VECTOR2I(mm(s), mm(s)))
@@ -278,7 +305,7 @@ def main():
     pcbnew.SaveBoard(pcb_path, board)
     print(f"board {W} x {H} mm, {len(fps)} footprints, {board.GetNetCount()} nets, "
           f"{sum(len(v) for v in VIAS.values())} vias, {len(zones)} GND zones")
-    for ref in ("U1", "R1", "C1", "C2", "D1", "R2", "D2", "R3"):
+    for ref in ("U1", "R1", "C1", "C2", "D1", "R2", "D2", "R3", "D3", "D4", "D5", "D6", "JP1", "J4", "Q1"):
         print(ref, {p.GetNumber(): tuple(round(v, 3) for v in pad_xy(ref, p.GetNumber())) for p in fps[ref].Pads() if p.GetNumber()})
 
 

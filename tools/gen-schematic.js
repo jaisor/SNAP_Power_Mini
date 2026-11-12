@@ -1,6 +1,7 @@
-// Generates the SNAP Mini Power Controller schematic for KiCad 10: solar panel, battery, switch and load wire
-// pads, a CN3163 linear solar charger with CHRG/DONE LEDs, the switch in series with battery +
-// toward the load, plus two M2 mounting holes.
+// Generates the SNAP Mini Power Controller schematic for KiCad 10: wire pads for up to four solar
+// panels (each OR-ed in through its own Schottky), battery, switch and load, a CN3163 linear solar
+// charger with CHRG/DONE LEDs behind a solder jumper, the switch in series with battery + toward
+// the load, plus two M2 mounting holes.
 // Usage: node tools/gen-schematic.js [project dir, default: repo root]
 const fs = require("fs");
 const crypto = require("crypto");
@@ -35,11 +36,32 @@ function findSym(text, name) {
   if (k < 0) throw new Error("symbol not found: " + name);
   return block(text, k + 2);
 }
-// Returns a library symbol renamed to lib:name (none of the symbols used here are derived).
+// Top-level property blocks of a symbol, by name.
+function propBlocks(sym) {
+  const out = {};
+  for (let i = sym.indexOf('\n\t\t(property "'); i >= 0; i = sym.indexOf('\n\t\t(property "', i + 1)) {
+    const b = block(sym, i + 3);
+    out[b.match(/^\(property "([^"]+)"/)[1]] = b;
+  }
+  return out;
+}
+// Returns a library symbol renamed to lib:name. A derived symbol (extends) is flattened: the
+// base symbol's graphics and pins with the derived symbol's own properties.
 function libSymbol(lib, name) {
   const text = fs.readFileSync(`${LIBDIR}/${lib}.kicad_sym`, "utf8").replace(/\r\n/g, "\n");
-  const s = findSym(text, name);
-  if (/\(extends /.test(s)) throw new Error(`${lib}:${name} is derived; flatten it first`);
+  let s = findSym(text, name);
+  const ext = s.match(/\(extends "([^"]+)"\)/);
+  if (ext) {
+    const base = findSym(text, ext[1]);
+    if (/\(extends /.test(base)) throw new Error(`${lib}:${name}: base ${ext[1]} is derived too`);
+    let flat = base.replace(`(symbol "${ext[1]}"`, `(symbol "${name}"`).split(`(symbol "${ext[1]}_`).join(`(symbol "${name}_`);
+    const bp = propBlocks(base);
+    for (const [k, v] of Object.entries(propBlocks(s))) {
+      if (bp[k]) flat = flat.replace(bp[k], v);
+      else flat = flat.replace(`\n\t\t(symbol "${name}_`, `\n\t\t${v}\n\t\t(symbol "${name}_`);
+    }
+    s = flat;
+  }
   return s.replace(`(symbol "${name}"`, `(symbol "${lib}:${name}"`);
 }
 function pinsOf(symText) {
@@ -165,12 +187,17 @@ function flag(at, rot) {
   flgN++;
   return place(`#FLG0${String(flgN).padStart(2, "0")}`, "power:PWR_FLAG", at.x, at.y, { value: "PWR_FLAG", power: true, rot });
 }
-// Two SMD wire pads per footprint (pad 1 on top), project library SNAP_Power_Mini.pretty.
-const PADS = "SNAP_Power_Mini:WirePad_1x02_SMD_2.0x2.1mm_P3.5mm";
+// SMD wire pads from the project library SNAP_Power_Mini.pretty: pairs side by side, and a solar row
+// of four panel + pads and a double-size shared return in the middle (pad order 1, 2, 5, 3, 4).
+const PADS = "SNAP_Power_Mini:WirePad_1x02_SMD_1.4x1.5mm_P2.0mm";
+const SOLAR_PADS = "SNAP_Power_Mini:WirePad_Solar4_SMD_1.4x1.5mm_GND2.8x1.5mm";
 const FP = {
+  sod323: "Diode_SMD:D_SOD-323",
+  jumper: "SNAP_Power_Mini:SolderJumper-2_P0.9mm_Open_Pad0.6x0.8mm",
+  hole: "SNAP_Power_Mini:MountingHole_2.1mm_M2",
   r0603: "Resistor_SMD:R_0603_1608Metric",
   c0603: "Capacitor_SMD:C_0603_1608Metric",
-  // The status LEDs and their resistors are 0402 so they fit beside the IC on a 20 x 12 mm board.
+  // The status LEDs and their resistors are 0402 so they fit beside the IC on this small board.
   r0402: "Resistor_SMD:R_0402_1005Metric",
   led0402: "LED_SMD:LED_0402_1005Metric",
 };
@@ -181,18 +208,33 @@ const FP = {
 // Charger as in the SD05CRMA module (datasheet Figure 1), with its CHRG (red) and DONE (green)
 // LEDs from VIN, so they light only while the panel is delivering power.
 const CH = 40.64; // charger block top rail
-const J4 = placeByPin("J4", "Connector_Generic:Conn_01x02", "1", P(27.94, CH), { mirror: "y", value: "SOLAR", fp: PADS, noBom: true });
+// Up to four panels, one shared return. Each panel + reaches VIN through its own Schottky, so a
+// shaded or disconnected panel can't sink current from the others.
+const J4 = placeByPin("J4", "Connector_Generic:Conn_01x05", "1", P(25.4, CH + 12.7), { mirror: "y", value: "SOLAR", fp: SOLAR_PADS, noBom: true });
+for (let n = 1; n <= 4; n++) {
+  wire(J4.pin(String(n)), P(27.94, J4.pin(String(n)).y));
+  LABELS.push({ name: `SOL${n}`, at: P(27.94, J4.pin(String(n)).y), ang: 0 });
+}
+gnd(wire(J4.pin("5"), P(27.94, J4.pin("5").y), P(27.94, J4.pin("5").y + 2.54)));
+const busX = 33.02;
+for (let n = 1; n <= 4; n++) {
+  const y = CH - (4 - n) * 7.62;
+  const D = placeByPin(`D${n + 2}`, "Device:D_Schottky", "1", P(busX, y), { rot: 180, value: "1N5819WS", fp: FP.sod323 });
+  wire(P(20.32, y), D.pin("2"));
+  LABELS.push({ name: `SOL${n}`, at: P(20.32, y), ang: 0 });
+  if (n > 1) junction(P(busX, y));
+}
+wire(P(busX, CH - 22.86), P(busX, CH));
 const U1 = place("U1", "SNAP_Power_Mini:CN3163", 73.66, CH + 5.08, { value: "CN3163" });
 const C1 = placeByPin("C1", "Device:C", "1", P(45.72, CH), { value: "10uF/10V", fp: FP.c0603, labelLeft: true });
-// The panel only reaches VIN through a passive pad: flag it for ERC.
+// VIN is driven only by the diodes' passive pins: flag it for ERC.
 const vinFlag = P(40.64, CH);
-wire(J4.pin("1"), vinFlag, P(45.72, CH), U1.pin("4"));
+wire(P(busX, CH), vinFlag, P(45.72, CH), U1.pin("4"));
 flag(vinFlag);
 junction(vinFlag);
 junction(P(45.72, CH));
 LABELS.push({ name: "VIN", at: P(50.8, CH), ang: 0 });
 gnd(C1.pin("2"));
-gnd(wire(J4.pin("2"), P(30.48, J4.pin("2").y), P(30.48, CH + 7.62)));
 // TEMP grounded: battery temperature sensing disabled (no NTC in a bare cell).
 gnd(wire(U1.pin("1"), P(60.96, U1.pin("1").y)));
 // R_ISET: ICH = 1188V / 1.2k = 0.99A (datasheet "Setting Charge Current").
@@ -214,48 +256,69 @@ const C2 = placeByPin("C2", "Device:C", "1", P(91.44, batY), { value: "10uF/10V"
 gnd(C2.pin("2"));
 // Status LEDs (datasheet "Open-Drain Status Outputs"): ~CHRG sinks while charging (red),
 // ~DONE once charging has terminated (green). ~1k gives 2-3 mA from a 5V panel.
+const ledX = 116.84;
 function statusLed(n, y, colour) {
   const D = placeByPin(`D${n}`, "Device:LED", "1", P(96.52, y), { value: colour, fp: FP.led0402 });
   const R = placeByPin(`R${n + 1}`, "Device:R", "1", P(106.68, y), { rot: 90, value: "1k", fp: FP.r0402 });
   wire(D.pin("2"), R.pin("1"));
-  wire(R.pin("2"), P(119.38, y));
-  LABELS.push({ name: "VIN", at: P(119.38, y), ang: 0 });
+  wire(R.pin("2"), P(ledX, y));
   return D;
 }
 const D1 = statusLed(1, U1.pin("7").y, "RED");
 wire(U1.pin("7"), D1.pin("1"));
 const D2 = statusLed(2, U1.pin("6").y + 7.62, "GREEN");
 wire(U1.pin("6"), P(fbX, U1.pin("6").y), P(fbX, D2.pin("1").y), D2.pin("1"));
+// JP1, normally open, feeds both LED resistors from VIN: bridge it with solder to enable the LEDs.
+// Left open they draw nothing.
+const ledTop = U1.pin("7").y;
+wire(P(ledX, D2.pin("1").y), P(ledX, ledTop), P(ledX, CH));
+junction(P(ledX, ledTop));
+const JP1 = placeByPin("JP1", "Jumper:SolderJumper_2_Open", "1", P(ledX + 2.54, CH), { value: "LED_EN", fp: FP.jumper });
+wire(P(ledX, CH), JP1.pin("1"));
+LABELS.push({ name: "LED_PWR", at: P(ledX, CH), ang: 180 });
+wire(JP1.pin("2"), P(JP1.pin("2").x + 2.54, CH));
+LABELS.push({ name: "VIN", at: P(JP1.pin("2").x + 2.54, CH), ang: 0 });
 
-// BATTERY + -> SWITCH -> LOAD + ; BATTERY - and LOAD - share GND.
+// BATTERY + -> Q1 -> BAT+ -> SWITCH -> LOAD + ; BATTERY - and LOAD - share GND.
+// Q1 AO3401A, gate to GND, is the reverse-battery guard: a cell the right way round turns it on
+// through its body diode (then ~60 mOhm both ways, so the charger still charges through it); a
+// reversed cell leaves it off and the body diode blocks.
 const RAIL = 76.2;
 const J1 = placeByPin("J1", "Connector_Generic:Conn_01x02", "1", P(55.88, RAIL), { mirror: "y", value: "BATTERY", fp: PADS, noBom: true });
 // The switch pads face down so the battery and load sides read left to right.
-const J2 = placeByPin("J2", "Connector_Generic:Conn_01x02", "1", P(76.2, RAIL - 5.08), { rot: 90, value: "SWITCH", fp: PADS, noBom: true });
+const J2 = placeByPin("J2", "Connector_Generic:Conn_01x02", "1", P(81.28, RAIL - 5.08), { rot: 90, value: "SWITCH", fp: PADS, noBom: true });
 const J3 = placeByPin("J3", "Connector_Generic:Conn_01x02", "1", P(96.52, RAIL), { value: "LOAD", fp: PADS, noBom: true });
+const Q1 = placeByPin("Q1", "Transistor_FET:AO3401A", "3", P(66.04, RAIL), { rot: 90, value: "AO3401A", fieldsRight: true });
+wire(J1.pin("1"), Q1.pin("3"));
+LABELS.push({ name: "BAT_IN", at: P(57.15, RAIL), ang: 0 });
+gnd(Q1.pin("1"));
 // BAT+ is driven by the charger's BAT pin, so it needs no PWR_FLAG.
-wire(J1.pin("1"), P(J2.pin("1").x, RAIL), J2.pin("1"));
-LABELS.push({ name: "BAT+", at: P(58.42, RAIL), ang: 0 });
+wire(Q1.pin("2"), P(J2.pin("1").x, RAIL), J2.pin("1"));
+LABELS.push({ name: "BAT+", at: P(77.47, RAIL), ang: 0 });
 wire(J2.pin("2"), P(J2.pin("2").x, RAIL), J3.pin("1"));
 LABELS.push({ name: "VOUT", at: P(86.36, RAIL), ang: 0 });
 gnd(wire(J1.pin("2"), P(60.96, J1.pin("2").y), P(60.96, RAIL + 7.62)));
 gnd(wire(J3.pin("2"), P(91.44, J3.pin("2").y), P(91.44, RAIL + 7.62)));
 // GND needs a driver for ERC; tie a flag to a stand-alone ground symbol.
-wire(P(66.04, RAIL + 5.08), P(66.04, RAIL + 7.62));
-flag(P(66.04, RAIL + 5.08));
-gnd(P(66.04, RAIL + 7.62));
+wire(P(109.22, RAIL + 5.08), P(109.22, RAIL + 7.62));
+flag(P(109.22, RAIL + 5.08));
+gnd(P(109.22, RAIL + 7.62));
 // M2 mounting holes (non-plated), one at each end of the board
 for (let i = 0; i < 2; i++)
-  place(`H${i + 1}`, "Mechanical:MountingHole", 121.92 + i * 12.7, RAIL, { value: "M2", fp: "MountingHole:MountingHole_2.2mm_M2" });
+  place(`H${i + 1}`, "Mechanical:MountingHole", 121.92 + i * 12.7, RAIL, { value: "M2", fp: FP.hole });
 TEXTS.push({
-  at: P(50.8, 101.6),
+  at: P(50.8, 116.84),
   text: [
-    "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 20 x 12 mm, two M2 holes. No net carries more than 1 A.",
-    "- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.",
+    "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 20 x 15 mm, two M2 holes. No net carries more than 1 A.",
+    "- J4 SOLAR: up to four 5V panels on S1-S4 (+) with one shared GND pad. Each + passes its own 1N5819WS (D3-D6) to VIN,",
+    "  so panels can't feed current into each other. CN3163 input 4.4-6V after the ~0.3-0.4V diode drop, absolute max 6.5V:",
+    "  panel Voc must stay below 6.5V.",
     "- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel",
     "  sags toward 4.4V and by thermal regulation (~130C die). TEMP grounded (no NTC).",
-    "- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Both fed from VIN: dark without sun.",
-    "- J1 BATTERY: 1S Li-ion, 1 = BAT+, 2 = GND. The charger feeds BAT+ directly, so the cell charges with the switch open.",
+    "- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Fed from VIN through JP1, a normally open",
+    "  solder jumper: bridge it to enable the LEDs. Left open the LEDs are off and draw nothing.",
+    "- J1 BATTERY: 1S Li-ion, 1 = BAT_IN (+), 2 = GND. Q1 AO3401A (gate to GND) passes it to BAT+ and blocks a reversed cell.",
+    "  The charger feeds BAT+ directly, so the cell charges with the switch open.",
     "- J2 SWITCH: off-board SPST in series with battery + toward the load. 1 = BAT+, 2 = VOUT.",
     "- J3 LOAD: 1 = VOUT (switched battery +), 2 = GND.",
   ].join("\\n"),
@@ -283,8 +346,8 @@ function emitPart(p) {
   const libDesc = libVal("Description") || "";
   const w = (s) => s.length * 1.1;
   let refAt, valAt, hideVal;
-  // Device:R and Device:C are drawn vertical at rotation 0, Device:LED horizontal.
-  const horiz = !!(p.rot % 180) !== (p.libId === "Device:LED");
+  // Device:R and Device:C are drawn vertical at rotation 0, the LED and the diode horizontal.
+  const horiz = !!(p.rot % 180) !== (p.libId === "Device:LED" || p.libId === "Device:D_Schottky");
   if (o.power) {
     refAt = [x, y]; valAt = [x, y + 3.81];
     hideVal = p.libId === "power:PWR_FLAG";
@@ -296,6 +359,8 @@ function emitPart(p) {
   } else if (p.libId.startsWith("Device")) {
     const dx = o.labelLeft ? -2.54 : 2.54;
     refAt = [x + dx, y - 1.27]; valAt = [x + dx, y + 1.27];
+  } else if (o.fieldsRight) {
+    refAt = [x + 3.81, y - 1.27]; valAt = [x + 3.81, y + 1.27];
   } else if (p.libId.startsWith("Connector") && p.rot === 90) {
     // Pins point down: fields to the right of the body.
     refAt = [x + 5.08, y - 1.27]; valAt = [x + 5.08, y + 1.27];
@@ -310,7 +375,7 @@ function emitPart(p) {
   const just =
     p.libId === "SNAP_Power_Mini:CN3163" ? ["left", "right"]
     : p.libId.startsWith("Device") && !horiz ? [side, side]
-    : p.libId.startsWith("Connector") && p.rot === 90 ? ["left", "left"]
+    : (p.libId.startsWith("Connector") && p.rot === 90) || o.fieldsRight ? ["left", "left"]
     : [];
   // Field angles are relative to the symbol, so counter-rotate to keep text horizontal.
   const ang = p.rot % 180 ? (360 - p.rot) % 360 : 0;
@@ -356,7 +421,7 @@ const out = [
 		(title "SNAP Mini Power Controller")
 		(date "2026-10-30")
 		(rev "0.2")
-		(comment 1 "Solar -> CN3163 -> battery; battery -> switch -> load. Wire pads, 20 x 12 mm, 2x M2")
+		(comment 1 "4 solar inputs -> CN3163 -> Q1 -> battery; switch -> load. 20 x 15 mm")
 	)
 	(lib_symbols
 ${Object.values(SYMS).map((s) => "\t\t" + indent(s.text.replace(/^\t/, ""))).join("\n")}
