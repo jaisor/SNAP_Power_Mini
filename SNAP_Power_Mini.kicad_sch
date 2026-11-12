@@ -8,10 +8,10 @@
 		(title "SNAP Mini Power Controller")
 		(date "2026-10-30")
 		(rev "0.2")
-		(comment 1 "4 solar inputs -> CN3163 -> Q1 -> battery; switch -> load. 20 x 15 mm")
+		(comment 1 "Solar -> CN3163 -> Q1 -> battery; switch -> load; battery NTC. 14.4 x 12.2 mm")
 	)
 	(lib_symbols
-		(symbol "Connector_Generic:Conn_01x05"
+		(symbol "Connector_Generic:Conn_01x02"
 			(pin_names
 				(offset 1.016)
 				(hide yes)
@@ -22,7 +22,7 @@
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
 			(property "Reference" "J"
-				(at 0 7.62 0)
+				(at 0 2.54 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -31,8 +31,8 @@
 					)
 				)
 			)
-			(property "Value" "Conn_01x05"
-				(at 0 -7.62 0)
+			(property "Value" "Conn_01x02"
+				(at 0 -5.08 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -63,7 +63,7 @@
 					)
 				)
 			)
-			(property "Description" "Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -96,38 +96,16 @@
 					)
 				)
 			)
-			(symbol "Conn_01x05_1_1"
+			(symbol "Conn_01x02_1_1"
 				(rectangle
-					(start -1.27 6.35)
-					(end 1.27 -6.35)
+					(start -1.27 1.27)
+					(end 1.27 -3.81)
 					(stroke
 						(width 0.254)
 						(type default)
 					)
 					(fill
 						(type background)
-					)
-				)
-				(rectangle
-					(start -1.27 5.207)
-					(end 0 4.953)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 2.667)
-					(end 0 2.413)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
 					)
 				)
 				(rectangle
@@ -152,19 +130,8 @@
 						(type none)
 					)
 				)
-				(rectangle
-					(start -1.27 -4.953)
-					(end 0 -5.207)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
 				(pin passive line
-					(at -5.08 5.08 0)
+					(at -5.08 0 0)
 					(length 3.81)
 					(name "Pin_1"
 						(effects
@@ -182,344 +149,9 @@
 					)
 				)
 				(pin passive line
-					(at -5.08 2.54 0)
-					(length 3.81)
-					(name "Pin_2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 0 0)
-					(length 3.81)
-					(name "Pin_3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
 					(at -5.08 -2.54 0)
 					(length 3.81)
-					(name "Pin_4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 -5.08 0)
-					(length 3.81)
-					(name "Pin_5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "power:GND"
-			(power global)
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "#PWR"
-				(at 0 -6.35 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "GND"
-				(at 0 -3.81 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "GND_0_1"
-				(polyline
-					(pts
-						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "GND_1_1"
-				(pin power_in line
-					(at 0 0 270)
-					(length 0)
-					(name ""
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Device:D_Schottky"
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "D"
-				(at 0 2.54 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "D_Schottky"
-				(at 0 -2.54 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Schottky diode"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "diode Schottky"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "D_Schottky_0_1"
-				(polyline
-					(pts
-						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 0) (xy -1.27 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "D_Schottky_1_1"
-				(pin passive line
-					(at -3.81 0 0)
-					(length 2.54)
-					(name "K"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 3.81 0 180)
-					(length 2.54)
-					(name "A"
+					(name "Pin_2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1056,6 +688,121 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:GND"
+			(power global)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:R"
 			(pin_numbers
 				(hide yes)
@@ -1575,164 +1322,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Connector_Generic:Conn_01x02"
-			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "J"
-				(at 0 2.54 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Conn_01x02"
-				(at 0 -5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "connector"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "Connector*:*_1x??_*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "Conn_01x02_1_1"
-				(rectangle
-					(start -1.27 1.27)
-					(end 1.27 -3.81)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(rectangle
-					(start -1.27 0.127)
-					(end 0 -0.127)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -1.27 -2.413)
-					(end 0 -2.667)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin passive line
-					(at -5.08 0 0)
-					(length 3.81)
-					(name "Pin_1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 -2.54 0)
-					(length 3.81)
-					(name "Pin_2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Transistor_FET:AO3401A"
 			(pin_names
 				(hide yes)
@@ -2047,17 +1636,21 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Mechanical:MountingHole"
+		(symbol "Jumper:SolderJumper_2_Bridged"
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 1.016)
+				(offset 0)
+				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom no)
 			(on_board yes)
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "H"
-				(at 0 5.08 0)
+			(property "Reference" "JP"
+				(at 0 2.032 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -2066,8 +1659,8 @@
 					)
 				)
 			)
-			(property "Value" "MountingHole"
-				(at 0 3.175 0)
+			(property "Value" "SolderJumper_2_Bridged"
+				(at 0 -2.54 0)
 				(show_name no)
 				(do_not_autoplace no)
 				(effects
@@ -2088,6 +1681,28 @@
 				)
 			)
 			(property "Datasheet" ""
+				(at 0 -6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Solder Jumper, 2-pole, closed/bridged"
+				(at 0 -5.08 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "solder jumper SPST"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -2098,7 +1713,7 @@
 					)
 				)
 			)
-			(property "Description" "Mounting Hole without connection"
+			(property "ki_fp_filters" "SolderJumper*Bridged*"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -2109,34 +1724,60 @@
 					)
 				)
 			)
-			(property "ki_keywords" "mounting hole"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "MountingHole*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "MountingHole_0_1"
-				(circle
-					(center 0 0)
-					(radius 1.27)
+			(symbol "SolderJumper_2_Bridged_0_1"
+				(rectangle
+					(start -0.508 0.508)
+					(end 0.508 -0.508)
 					(stroke
-						(width 1.27)
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.254 1.016) (xy -0.254 -1.016)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(arc
+					(start -0.254 -1.016)
+					(mid -1.2656 0)
+					(end -0.254 1.016)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(arc
+					(start 0.254 1.016)
+					(mid 1.2656 0)
+					(end 0.254 -1.016)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 1.016) (xy 0.254 -1.016)
+					)
+					(stroke
+						(width 0.1524)
 						(type default)
 					)
 					(fill
@@ -2144,26 +1785,46 @@
 					)
 				)
 			)
+			(symbol "SolderJumper_2_Bridged_1_1"
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 3.81)
+					(name "B"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
 			(embedded_fonts no)
 		)
-	)
-	(junction
-		(at 33.02 25.4)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "93e22766-74ab-4d25-97ad-35665193dd43")
-	)
-	(junction
-		(at 33.02 33.02)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "dc99f5e9-3463-4de6-a16c-a6fc8320f47f")
-	)
-	(junction
-		(at 33.02 40.64)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "194efd27-9bba-4da4-99d6-b553c2c9e18b")
 	)
 	(junction
 		(at 40.64 40.64)
@@ -2195,125 +1856,27 @@
 		(color 0 0 0 0)
 		(uuid "879cba98-fb36-4da7-bed1-2aa02fbbde86")
 	)
-	(wire
-		(pts
-			(xy 25.4 53.34) (xy 27.94 53.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "12306002-4db1-4786-bb98-09d9d8a76850")
+	(junction
+		(at 142.24 53.34)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7cda8783-b52d-4801-bcfa-2948377a28cf")
+	)
+	(junction
+		(at 142.24 63.5)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "95613e4b-bd87-4827-b89e-3c97f8f81cc8")
 	)
 	(wire
 		(pts
-			(xy 25.4 55.88) (xy 27.94 55.88)
+			(xy 27.94 40.64) (xy 40.64 40.64)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "1a99b032-8aa7-49f6-9d2a-9cd0701f6c50")
-	)
-	(wire
-		(pts
-			(xy 25.4 58.42) (xy 27.94 58.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2501120b-ebcb-4b72-bc6d-3eaa6fabfb68")
-	)
-	(wire
-		(pts
-			(xy 25.4 60.96) (xy 27.94 60.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6a7e6eb3-14f1-4e94-8164-40e177f539d7")
-	)
-	(wire
-		(pts
-			(xy 25.4 63.5) (xy 27.94 63.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "64daa7fd-a5ec-494d-beb4-8d2b1454fb77")
-	)
-	(wire
-		(pts
-			(xy 27.94 63.5) (xy 27.94 66.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ff368736-42fc-4cd6-ba1d-fd2b71bd981c")
-	)
-	(wire
-		(pts
-			(xy 20.32 17.78) (xy 25.4 17.78)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d9809f66-38f8-4a1e-a122-f37a6a906e22")
-	)
-	(wire
-		(pts
-			(xy 20.32 25.4) (xy 25.4 25.4)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a3f8055b-42da-42d7-a47e-7a3330a40e89")
-	)
-	(wire
-		(pts
-			(xy 20.32 33.02) (xy 25.4 33.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "404e85cb-02dd-4673-bf8d-9805aec2b162")
-	)
-	(wire
-		(pts
-			(xy 20.32 40.64) (xy 25.4 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8b78a69a-61fa-4fa6-a506-1280e36f711b")
-	)
-	(wire
-		(pts
-			(xy 33.02 17.78) (xy 33.02 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5b00dfa0-3726-4ae6-9c06-079b7019f605")
-	)
-	(wire
-		(pts
-			(xy 33.02 40.64) (xy 40.64 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "849d2aa2-3ba5-4c1a-b3d6-155796ac67df")
+		(uuid "ae3e0f8e-5ece-4fdb-95f3-fdff0b8ad521")
 	)
 	(wire
 		(pts
@@ -2337,13 +1900,43 @@
 	)
 	(wire
 		(pts
-			(xy 63.5 50.8) (xy 60.96 50.8)
+			(xy 27.94 43.18) (xy 30.48 43.18)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "493bd05f-2913-4e7e-a85e-284abb63f712")
+		(uuid "b677ff65-604f-4264-982d-037762500230")
+	)
+	(wire
+		(pts
+			(xy 30.48 43.18) (xy 30.48 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e29de94f-f137-48c7-b1c0-d4e51b4cbb3c")
+	)
+	(wire
+		(pts
+			(xy 63.5 50.8) (xy 58.42 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5616ef73-3b4d-4b8a-bf79-563de8ef3c03")
+	)
+	(wire
+		(pts
+			(xy 58.42 50.8) (xy 58.42 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "53f04655-b0bd-47bb-9d59-f9d1fcde0652")
 	)
 	(wire
 		(pts
@@ -2675,7 +2268,137 @@
 		)
 		(uuid "06d46121-59cf-4529-8c46-3872e751ac92")
 	)
-	(text "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 20 x 15 mm, two M2 holes. No net carries more than 1 A.\n- J4 SOLAR: up to four 5V panels on S1-S4 (+) with one shared GND pad. Each + passes its own 1N5819WS (D3-D6) to VIN,\n  so panels can't feed current into each other. CN3163 input 4.4-6V after the ~0.3-0.4V diode drop, absolute max 6.5V:\n  panel Voc must stay below 6.5V.\n- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel\n  sags toward 4.4V and by thermal regulation (~130C die). TEMP grounded (no NTC).\n- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Fed from VIN through JP1, a normally open\n  solder jumper: bridge it to enable the LEDs. Left open the LEDs are off and draw nothing.\n- J1 BATTERY: 1S Li-ion, 1 = BAT_IN (+), 2 = GND. Q1 AO3401A (gate to GND) passes it to BAT+ and blocks a reversed cell.\n  The charger feeds BAT+ directly, so the cell charges with the switch open.\n- J2 SWITCH: off-board SPST in series with battery + toward the load. 1 = BAT+, 2 = VOUT.\n- J3 LOAD: 1 = VOUT (switched battery +), 2 = GND."
+	(wire
+		(pts
+			(xy 127 53.34) (xy 129.54 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bd1ee261-c741-456d-a401-0d035e810283")
+	)
+	(wire
+		(pts
+			(xy 137.16 53.34) (xy 142.24 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c8c8b265-4785-4760-bda2-9d4c104b0300")
+	)
+	(wire
+		(pts
+			(xy 142.24 53.34) (xy 144.78 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8e172ed0-2843-4dbe-bc3f-6d05771c03bd")
+	)
+	(wire
+		(pts
+			(xy 152.4 53.34) (xy 154.94 53.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c153482a-c0a2-4634-b05f-804570cf4006")
+	)
+	(wire
+		(pts
+			(xy 154.94 53.34) (xy 154.94 55.88)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1fdd4cb1-5d19-49de-802e-9bdcdde1030f")
+	)
+	(wire
+		(pts
+			(xy 142.24 53.34) (xy 142.24 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "24702edd-3c90-4d0d-93be-9ca2762fdb9a")
+	)
+	(wire
+		(pts
+			(xy 142.24 63.5) (xy 149.86 63.5)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "487109e4-b64a-4506-9868-a8fa0590acd7")
+	)
+	(wire
+		(pts
+			(xy 149.86 66.04) (xy 147.32 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "101e72e3-4c28-429c-a106-eb43a050e00b")
+	)
+	(wire
+		(pts
+			(xy 147.32 66.04) (xy 147.32 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2bdac14c-8769-4dd5-bebe-9b47a955f917")
+	)
+	(wire
+		(pts
+			(xy 142.24 63.5) (xy 142.24 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7c6ee258-074a-4b2f-a995-fd9b70c40095")
+	)
+	(wire
+		(pts
+			(xy 142.24 73.66) (xy 144.78 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5d91c30b-624e-423e-906e-48924114311a")
+	)
+	(wire
+		(pts
+			(xy 154.94 73.66) (xy 157.48 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e34e3d6b-c3ee-414d-a112-626568f1ea5a")
+	)
+	(wire
+		(pts
+			(xy 157.48 73.66) (xy 157.48 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4ebbf4d8-4719-4c8a-aed3-648dcd178538")
+	)
+	(text "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 14.4 x 12.2 mm. No net carries more than 1 A.\n- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.\n- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel\n  sags toward 4.4V and by thermal regulation (~130C die).\n- J5 NTC: optional 10k B3950 battery thermistor (TEMP, GND). R4/R5 set a ~1-46C charge window. JP2 (closed as made)\n  grounds TEMP, which disables temperature sensing: cut JP2 when fitting the NTC.\n- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Fed from VIN through JP1, a normally open\n  solder jumper: bridge it to enable the LEDs. Left open the LEDs are off and draw nothing.\n- J1 BATTERY: 1S Li-ion, 1 = BAT_IN (+), 2 = GND. Q1 AO3401A (gate to GND) passes it to BAT+ and blocks a reversed cell.\n  The charger feeds BAT+ directly, so the cell charges with the switch open.\n- J2 SWITCH: off-board SPST in series with battery + toward the load. 1 = BAT+, 2 = VOUT.\n- J3 LOAD: 1 = VOUT (switched battery +), 2 = GND."
 		(exclude_from_sim no)
 		(at 50.8 116.84 0)
 		(effects
@@ -2686,86 +2409,6 @@
 		)
 		(uuid "2622b8cc-eac3-4146-b484-4befea12a8ec")
 	)
-	(label "SOL1"
-		(at 27.94 53.34 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "374a23fb-8a76-4ae0-906c-5493701766b7")
-	)
-	(label "SOL2"
-		(at 27.94 55.88 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "182177f7-9c46-4d6e-b8f1-cdb50778c33f")
-	)
-	(label "SOL3"
-		(at 27.94 58.42 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "f4053375-980b-4974-b5e2-65cff75731c0")
-	)
-	(label "SOL4"
-		(at 27.94 60.96 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "7128b2be-9c85-4efb-8907-c4362ac11c2b")
-	)
-	(label "SOL1"
-		(at 20.32 17.78 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "16817c2e-d515-44ad-a203-b5e7e00379c7")
-	)
-	(label "SOL2"
-		(at 20.32 25.4 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "392ded78-db58-4101-a74b-11f310c028a1")
-	)
-	(label "SOL3"
-		(at 20.32 33.02 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "8729be75-795b-4bb6-8890-c6c60605fe64")
-	)
-	(label "SOL4"
-		(at 20.32 40.64 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "481b898b-6442-4684-9657-d5d15f45192b")
-	)
 	(label "VIN"
 		(at 50.8 40.64 0)
 		(effects
@@ -2775,6 +2418,16 @@
 			(justify left bottom)
 		)
 		(uuid "e20232d7-f94a-4da0-8118-99b1bf25c0d4")
+	)
+	(label "TEMP"
+		(at 58.42 53.34 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "cbd04425-6be9-41b5-ab4c-1cff65e488c9")
 	)
 	(label "BAT+"
 		(at 96.52 30.48 0)
@@ -2836,9 +2489,29 @@
 		)
 		(uuid "7e1f5a5c-4bf0-4cfd-b015-7484ef8b9712")
 	)
+	(label "VIN"
+		(at 127 53.34 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a3cef3bc-8cb4-4bc6-8e78-1e6be1c2dd8a")
+	)
+	(label "TEMP"
+		(at 142.24 53.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "3a3ddc79-b199-4378-b429-ba7428ed7c05")
+	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x05")
-		(at 20.32 58.42 0)
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 22.86 40.64 0)
 		(mirror y)
 		(unit 1)
 		(exclude_from_sim no)
@@ -2847,7 +2520,7 @@
 		(dnp no)
 		(uuid "388b9a2e-3db2-4ea6-bbde-fcb5d9887a50")
 		(property "Reference" "J4"
-			(at 20.32 54.61 0)
+			(at 22.86 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2855,15 +2528,15 @@
 			)
 		)
 		(property "Value" "SOLAR"
-			(at 15.03 62.23 0)
+			(at 17.57 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "SNAP_Power_Mini:WirePad_Solar4_SMD_1.4x1.5mm_GND2.8x1.5mm"
-			(at 20.32 58.42 0)
+		(property "Footprint" "SNAP_Power_Mini:WirePad_1x02_SMD_1.4x1.5mm_P2.0mm"
+			(at 22.86 40.64 0)
 			(hide yes)
 			(effects
 				(font
@@ -2872,7 +2545,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 20.32 58.42 0)
+			(at 22.86 40.64 0)
 			(hide yes)
 			(effects
 				(font
@@ -2880,8 +2553,8 @@
 				)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 20.32 58.42 0)
+		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 22.86 40.64 0)
 			(hide yes)
 			(effects
 				(font
@@ -2895,352 +2568,10 @@
 		(pin "2"
 			(uuid "00ee8cdf-9cf7-428e-8686-542c51e01876")
 		)
-		(pin "3"
-			(uuid "13ff88ec-e44d-4618-ac2f-582dab31cfaa")
-		)
-		(pin "4"
-			(uuid "70b071f2-6fe1-4468-b24c-4ab74de3f28b")
-		)
-		(pin "5"
-			(uuid "7153d951-0636-4fd3-acc4-59061b41ba32")
-		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
 					(reference "J4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 27.94 66.04 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(dnp no)
-		(uuid "52ba76d7-87c3-4a93-8faa-5d0b3db26b08")
-		(property "Reference" "#PWR001"
-			(at 27.94 66.04 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 27.94 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 27.94 66.04 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 27.94 66.04 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 27.94 66.04 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "5189d27e-8b69-4213-ae2a-1c9d755e83ef")
-		)
-		(instances
-			(project "SNAP_Power_Mini"
-				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR001")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D_Schottky")
-		(at 29.21 17.78 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "f95768bb-71e7-4103-b8f0-c5ed2fbc7764")
-		(property "Reference" "D3"
-			(at 29.21 15.24 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1N5819WS"
-			(at 29.21 20.32 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Diode_SMD:D_SOD-323"
-			(at 29.21 17.78 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 29.21 17.78 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Schottky diode"
-			(at 29.21 17.78 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "683d9922-35b0-4f7f-82be-a8dec3b63ccd")
-		)
-		(pin "2"
-			(uuid "477800e8-e17f-47be-b576-18954f67581b")
-		)
-		(instances
-			(project "SNAP_Power_Mini"
-				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "D3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D_Schottky")
-		(at 29.21 25.4 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "910a5206-a346-409a-ad9a-0b98980080d1")
-		(property "Reference" "D4"
-			(at 29.21 22.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1N5819WS"
-			(at 29.21 27.94 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Diode_SMD:D_SOD-323"
-			(at 29.21 25.4 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 29.21 25.4 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Schottky diode"
-			(at 29.21 25.4 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "1f9d5e74-7e2e-4add-a3df-97fa89cfaaae")
-		)
-		(pin "2"
-			(uuid "2b36dd85-52ff-4e48-9b77-38a74950e372")
-		)
-		(instances
-			(project "SNAP_Power_Mini"
-				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "D4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D_Schottky")
-		(at 29.21 33.02 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "3a958453-2e5a-45fb-8e95-01cdbf950a5b")
-		(property "Reference" "D5"
-			(at 29.21 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1N5819WS"
-			(at 29.21 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Diode_SMD:D_SOD-323"
-			(at 29.21 33.02 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 29.21 33.02 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Schottky diode"
-			(at 29.21 33.02 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "400d8950-0997-4555-9f7c-9912b5f01bd8")
-		)
-		(pin "2"
-			(uuid "7e6a2db1-89cf-4110-bfa2-83b653e656ee")
-		)
-		(instances
-			(project "SNAP_Power_Mini"
-				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "D5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:D_Schottky")
-		(at 29.21 40.64 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "95a1c2a5-93df-4901-af74-5156bbf27ef0")
-		(property "Reference" "D6"
-			(at 29.21 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1N5819WS"
-			(at 29.21 43.18 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Diode_SMD:D_SOD-323"
-			(at 29.21 40.64 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 29.21 40.64 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Schottky diode"
-			(at 29.21 40.64 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "9ac3bf81-3327-41bf-b54c-adca23039908")
-		)
-		(pin "2"
-			(uuid "71b7e72f-5ff4-4dba-80bd-a97d5eff3d6c")
-		)
-		(instances
-			(project "SNAP_Power_Mini"
-				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "D6")
 					(unit 1)
 				)
 			)
@@ -3479,8 +2810,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "cb6cc50f-0f39-410e-a750-c7017224c249")
-		(property "Reference" "#PWR002"
+		(uuid "52ba76d7-87c3-4a93-8faa-5d0b3db26b08")
+		(property "Reference" "#PWR001"
 			(at 45.72 48.26 0)
 			(hide yes)
 			(effects
@@ -3525,12 +2856,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "e7e38f5e-8ce8-4118-ac79-211b4ad27041")
+			(uuid "5189d27e-8b69-4213-ae2a-1c9d755e83ef")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR002")
+					(reference "#PWR001")
 					(unit 1)
 				)
 			)
@@ -3538,15 +2869,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 60.96 50.8 0)
+		(at 30.48 48.26 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "edfe45f3-a735-479c-b2bb-61a4159e7330")
-		(property "Reference" "#PWR003"
-			(at 60.96 50.8 0)
+		(uuid "cb6cc50f-0f39-410e-a750-c7017224c249")
+		(property "Reference" "#PWR002"
+			(at 30.48 48.26 0)
 			(hide yes)
 			(effects
 				(font
@@ -3555,7 +2886,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 60.96 54.61 0)
+			(at 30.48 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3563,7 +2894,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 60.96 50.8 0)
+			(at 30.48 48.26 0)
 			(hide yes)
 			(effects
 				(font
@@ -3572,7 +2903,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 60.96 50.8 0)
+			(at 30.48 48.26 0)
 			(hide yes)
 			(effects
 				(font
@@ -3581,7 +2912,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 60.96 50.8 0)
+			(at 30.48 48.26 0)
 			(hide yes)
 			(effects
 				(font
@@ -3590,12 +2921,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "e9937dd7-b70e-4367-8822-152d25114122")
+			(uuid "e7e38f5e-8ce8-4118-ac79-211b4ad27041")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR003")
+					(reference "#PWR002")
 					(unit 1)
 				)
 			)
@@ -3676,8 +3007,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "397e9634-d372-4a8e-b89b-506b5fe75fe1")
-		(property "Reference" "#PWR004"
+		(uuid "edfe45f3-a735-479c-b2bb-61a4159e7330")
+		(property "Reference" "#PWR003"
 			(at 50.8 48.26 0)
 			(hide yes)
 			(effects
@@ -3722,12 +3053,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "ff74e25d-1366-4109-b110-cedaece404dc")
+			(uuid "e9937dd7-b70e-4367-8822-152d25114122")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR004")
+					(reference "#PWR003")
 					(unit 1)
 				)
 			)
@@ -3741,8 +3072,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "7fa20f54-b66b-46c5-b9d5-7ffb4b085166")
-		(property "Reference" "#PWR005"
+		(uuid "397e9634-d372-4a8e-b89b-506b5fe75fe1")
+		(property "Reference" "#PWR004"
 			(at 72.39 60.96 0)
 			(hide yes)
 			(effects
@@ -3787,12 +3118,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "f32ecb3e-aaf8-4e65-bb70-13071224e334")
+			(uuid "ff74e25d-1366-4109-b110-cedaece404dc")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR005")
+					(reference "#PWR004")
 					(unit 1)
 				)
 			)
@@ -3875,8 +3206,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "e797c4c0-df7c-4e1d-ab65-2b84de96709d")
-		(property "Reference" "#PWR006"
+		(uuid "7fa20f54-b66b-46c5-b9d5-7ffb4b085166")
+		(property "Reference" "#PWR005"
 			(at 91.44 38.1 0)
 			(hide yes)
 			(effects
@@ -3921,12 +3252,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "7f1ccdab-7db9-47d7-8dd5-b8af0af4b99a")
+			(uuid "f32ecb3e-aaf8-4e65-bb70-13071224e334")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR006")
+					(reference "#PWR005")
 					(unit 1)
 				)
 			)
@@ -4551,8 +3882,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "ebf836e8-5ac0-48d4-ab52-b4df851f074a")
-		(property "Reference" "#PWR007"
+		(uuid "e797c4c0-df7c-4e1d-ab65-2b84de96709d")
+		(property "Reference" "#PWR006"
 			(at 71.12 83.82 0)
 			(hide yes)
 			(effects
@@ -4597,12 +3928,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "070009a2-3913-44df-a28a-fb913674714c")
+			(uuid "7f1ccdab-7db9-47d7-8dd5-b8af0af4b99a")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR007")
+					(reference "#PWR006")
 					(unit 1)
 				)
 			)
@@ -4616,8 +3947,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "2d1bc56f-27ec-4e89-8768-3d0f2892960d")
-		(property "Reference" "#PWR008"
+		(uuid "ebf836e8-5ac0-48d4-ab52-b4df851f074a")
+		(property "Reference" "#PWR007"
 			(at 60.96 83.82 0)
 			(hide yes)
 			(effects
@@ -4662,12 +3993,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "983e140e-f339-4feb-97ea-ac1f9f5c3b46")
+			(uuid "070009a2-3913-44df-a28a-fb913674714c")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR008")
+					(reference "#PWR007")
 					(unit 1)
 				)
 			)
@@ -4681,8 +4012,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "1c552d25-338d-4e74-b263-2956a26884ca")
-		(property "Reference" "#PWR009"
+		(uuid "2d1bc56f-27ec-4e89-8768-3d0f2892960d")
+		(property "Reference" "#PWR008"
 			(at 91.44 83.82 0)
 			(hide yes)
 			(effects
@@ -4727,12 +4058,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "461a06de-a48d-4704-812e-28a3c6d7c02c")
+			(uuid "983e140e-f339-4feb-97ea-ac1f9f5c3b46")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR009")
+					(reference "#PWR008")
 					(unit 1)
 				)
 			)
@@ -4812,8 +4143,8 @@
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "f104a5f1-efa6-4215-a6a5-9a083c934728")
-		(property "Reference" "#PWR010"
+		(uuid "1c552d25-338d-4e74-b263-2956a26884ca")
+		(property "Reference" "#PWR009"
 			(at 109.22 83.82 0)
 			(hide yes)
 			(effects
@@ -4858,6 +4189,205 @@
 			)
 		)
 		(pin "1"
+			(uuid "461a06de-a48d-4704-812e-28a3c6d7c02c")
+		)
+		(instances
+			(project "SNAP_Power_Mini"
+				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
+					(reference "#PWR009")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 133.35 53.34 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "aa88c044-f164-4df4-8896-8c31070343d9")
+		(property "Reference" "R4"
+			(at 133.35 50.8 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "4.7k 1%"
+			(at 133.35 55.88 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 133.35 53.34 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 133.35 53.34 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 133.35 53.34 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "e3df8118-0ea4-4580-ab6f-845e1bd23de6")
+		)
+		(pin "2"
+			(uuid "7bc41100-b878-4e0b-8125-fa3299219fd5")
+		)
+		(instances
+			(project "SNAP_Power_Mini"
+				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
+					(reference "R4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 148.59 53.34 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ccd65cd3-8030-4128-af6b-792ee101f90a")
+		(property "Reference" "R5"
+			(at 148.59 50.8 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "47k 1%"
+			(at 148.59 55.88 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 148.59 53.34 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 148.59 53.34 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 148.59 53.34 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ccf08eb3-6821-4982-9f9b-7bb280f50554")
+		)
+		(pin "2"
+			(uuid "3aa65714-d933-4981-86d0-99d4c5aea3cb")
+		)
+		(instances
+			(project "SNAP_Power_Mini"
+				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
+					(reference "R5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 154.94 55.88 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "f104a5f1-efa6-4215-a6a5-9a083c934728")
+		(property "Reference" "#PWR010"
+			(at 154.94 55.88 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 154.94 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 154.94 55.88 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 154.94 55.88 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 154.94 55.88 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
 			(uuid "90069004-1258-438a-a630-14eccba0bc33")
 		)
 		(instances
@@ -4870,32 +4400,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Mechanical:MountingHole")
-		(at 121.92 76.2 0)
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 154.94 63.5 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
-		(uuid "5f0372d0-2833-4aa5-a48e-836cda0afaa6")
-		(property "Reference" "H1"
-			(at 121.92 72.39 0)
+		(uuid "09923bcc-757f-441b-a6fb-db3677aac486")
+		(property "Reference" "J5"
+			(at 154.94 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "M2"
-			(at 121.92 80.01 0)
+		(property "Value" "NTC"
+			(at 159.13 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "SNAP_Power_Mini:MountingHole_2.1mm_M2"
-			(at 121.92 76.2 0)
+		(property "Footprint" "SNAP_Power_Mini:WirePad_1x02_SMD_1.4x1.5mm_P2.0mm"
+			(at 154.94 63.5 0)
 			(hide yes)
 			(effects
 				(font
@@ -4904,7 +4434,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 121.92 76.2 0)
+			(at 154.94 63.5 0)
 			(hide yes)
 			(effects
 				(font
@@ -4912,8 +4442,8 @@
 				)
 			)
 		)
-		(property "Description" "Mounting Hole without connection"
-			(at 121.92 76.2 0)
+		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 154.94 63.5 0)
 			(hide yes)
 			(effects
 				(font
@@ -4921,43 +4451,49 @@
 				)
 			)
 		)
-
+		(pin "1"
+			(uuid "2f07e57f-522c-4565-9141-1902d6e7c0c4")
+		)
+		(pin "2"
+			(uuid "25c4b750-6c2b-42ce-a3c0-c4bf1dfea62c")
+		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "H1")
+					(reference "J5")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "Mechanical:MountingHole")
-		(at 134.62 76.2 0)
+		(lib_id "power:GND")
+		(at 147.32 68.58 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
-		(on_board yes)
+		(on_board no)
 		(dnp no)
-		(uuid "b1e481f1-bfc9-4531-ae74-92401cebddb9")
-		(property "Reference" "H2"
-			(at 134.62 72.39 0)
+		(uuid "28290b7e-f1bc-49fd-bf88-d89ef80508c3")
+		(property "Reference" "#PWR011"
+			(at 147.32 68.58 0)
+			(hide yes)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "M2"
-			(at 134.62 80.01 0)
+		(property "Value" "GND"
+			(at 147.32 72.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "SNAP_Power_Mini:MountingHole_2.1mm_M2"
-			(at 134.62 76.2 0)
+		(property "Footprint" ""
+			(at 147.32 68.58 0)
 			(hide yes)
 			(effects
 				(font
@@ -4966,7 +4502,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 134.62 76.2 0)
+			(at 147.32 68.58 0)
 			(hide yes)
 			(effects
 				(font
@@ -4974,8 +4510,8 @@
 				)
 			)
 		)
-		(property "Description" "Mounting Hole without connection"
-			(at 134.62 76.2 0)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 147.32 68.58 0)
 			(hide yes)
 			(effects
 				(font
@@ -4983,11 +4519,145 @@
 				)
 			)
 		)
-
+		(pin "1"
+			(uuid "96a85fe7-07c6-4237-bba0-f2f0338d0b6c")
+		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "H2")
+					(reference "#PWR011")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Jumper:SolderJumper_2_Bridged")
+		(at 149.86 73.66 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "6a0d99db-e768-44b6-9c9e-3f0b65171172")
+		(property "Reference" "JP2"
+			(at 149.86 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "NTC_OFF"
+			(at 149.86 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "SNAP_Power_Mini:SolderJumper-2_P0.9mm_Bridged_Pad0.6x0.8mm"
+			(at 149.86 73.66 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 149.86 73.66 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Solder Jumper, 2-pole, closed/bridged"
+			(at 149.86 73.66 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "83ab023c-872e-4d63-bac5-54a9e1974117")
+		)
+		(pin "2"
+			(uuid "cf033ce4-a565-4cb9-b12c-97f4a50aa297")
+		)
+		(instances
+			(project "SNAP_Power_Mini"
+				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
+					(reference "JP2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 157.48 76.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(dnp no)
+		(uuid "10527c8d-e260-4dd3-85fb-a0d967dcd5fe")
+		(property "Reference" "#PWR012"
+			(at 157.48 76.2 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 157.48 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 157.48 76.2 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 157.48 76.2 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 157.48 76.2 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "10128eff-0d6a-40c8-aae4-440870fd679f")
+		)
+		(instances
+			(project "SNAP_Power_Mini"
+				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)

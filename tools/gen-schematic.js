@@ -1,7 +1,7 @@
-// Generates the SNAP Mini Power Controller schematic for KiCad 10: wire pads for up to four solar
-// panels (each OR-ed in through its own Schottky), battery, switch and load, a CN3163 linear solar
-// charger with CHRG/DONE LEDs behind a solder jumper, the switch in series with battery + toward
-// the load, plus two M2 mounting holes.
+// Generates the SNAP Mini Power Controller schematic for KiCad 10: wire pads for a solar panel,
+// battery, switch, load and an optional battery NTC, a CN3163 linear solar charger with CHRG/DONE
+// LEDs behind a solder jumper, an AO3401A reverse-battery guard, and the switch in series with
+// battery + toward the load.
 // Usage: node tools/gen-schematic.js [project dir, default: repo root]
 const fs = require("fs");
 const crypto = require("crypto");
@@ -187,14 +187,11 @@ function flag(at, rot) {
   flgN++;
   return place(`#FLG0${String(flgN).padStart(2, "0")}`, "power:PWR_FLAG", at.x, at.y, { value: "PWR_FLAG", power: true, rot });
 }
-// SMD wire pads from the project library SNAP_Power_Mini.pretty: pairs side by side, and a solar row
-// of four panel + pads and a double-size shared return in the middle (pad order 1, 2, 5, 3, 4).
+// SMD wire pad pairs from the project library SNAP_Power_Mini.pretty.
 const PADS = "SNAP_Power_Mini:WirePad_1x02_SMD_1.4x1.5mm_P2.0mm";
-const SOLAR_PADS = "SNAP_Power_Mini:WirePad_Solar4_SMD_1.4x1.5mm_GND2.8x1.5mm";
 const FP = {
-  sod323: "Diode_SMD:D_SOD-323",
   jumper: "SNAP_Power_Mini:SolderJumper-2_P0.9mm_Open_Pad0.6x0.8mm",
-  hole: "SNAP_Power_Mini:MountingHole_2.1mm_M2",
+  jumperClosed: "SNAP_Power_Mini:SolderJumper-2_P0.9mm_Bridged_Pad0.6x0.8mm",
   r0603: "Resistor_SMD:R_0603_1608Metric",
   c0603: "Capacitor_SMD:C_0603_1608Metric",
   // The status LEDs and their resistors are 0402 so they fit beside the IC on this small board.
@@ -208,35 +205,21 @@ const FP = {
 // Charger as in the SD05CRMA module (datasheet Figure 1), with its CHRG (red) and DONE (green)
 // LEDs from VIN, so they light only while the panel is delivering power.
 const CH = 40.64; // charger block top rail
-// Up to four panels, one shared return. Each panel + reaches VIN through its own Schottky, so a
-// shaded or disconnected panel can't sink current from the others.
-const J4 = placeByPin("J4", "Connector_Generic:Conn_01x05", "1", P(25.4, CH + 12.7), { mirror: "y", value: "SOLAR", fp: SOLAR_PADS, noBom: true });
-for (let n = 1; n <= 4; n++) {
-  wire(J4.pin(String(n)), P(27.94, J4.pin(String(n)).y));
-  LABELS.push({ name: `SOL${n}`, at: P(27.94, J4.pin(String(n)).y), ang: 0 });
-}
-gnd(wire(J4.pin("5"), P(27.94, J4.pin("5").y), P(27.94, J4.pin("5").y + 2.54)));
-const busX = 33.02;
-for (let n = 1; n <= 4; n++) {
-  const y = CH - (4 - n) * 7.62;
-  const D = placeByPin(`D${n + 2}`, "Device:D_Schottky", "1", P(busX, y), { rot: 180, value: "1N5819WS", fp: FP.sod323 });
-  wire(P(20.32, y), D.pin("2"));
-  LABELS.push({ name: `SOL${n}`, at: P(20.32, y), ang: 0 });
-  if (n > 1) junction(P(busX, y));
-}
-wire(P(busX, CH - 22.86), P(busX, CH));
+const J4 = placeByPin("J4", "Connector_Generic:Conn_01x02", "1", P(27.94, CH), { mirror: "y", value: "SOLAR", fp: PADS, noBom: true });
 const U1 = place("U1", "SNAP_Power_Mini:CN3163", 73.66, CH + 5.08, { value: "CN3163" });
 const C1 = placeByPin("C1", "Device:C", "1", P(45.72, CH), { value: "10uF/10V", fp: FP.c0603, labelLeft: true });
-// VIN is driven only by the diodes' passive pins: flag it for ERC.
+// The panel only reaches VIN through a passive pad: flag it for ERC.
 const vinFlag = P(40.64, CH);
-wire(P(busX, CH), vinFlag, P(45.72, CH), U1.pin("4"));
+wire(J4.pin("1"), vinFlag, P(45.72, CH), U1.pin("4"));
 flag(vinFlag);
 junction(vinFlag);
 junction(P(45.72, CH));
 LABELS.push({ name: "VIN", at: P(50.8, CH), ang: 0 });
 gnd(C1.pin("2"));
-// TEMP grounded: battery temperature sensing disabled (no NTC in a bare cell).
-gnd(wire(U1.pin("1"), P(60.96, U1.pin("1").y)));
+gnd(wire(J4.pin("2"), P(30.48, J4.pin("2").y), P(30.48, CH + 7.62)));
+// TEMP: battery NTC input (datasheet "Battery Temperature Sense"), drawn as a block on the right.
+wire(U1.pin("1"), P(58.42, U1.pin("1").y), P(58.42, U1.pin("1").y + 2.54));
+LABELS.push({ name: "TEMP", at: P(58.42, U1.pin("1").y + 2.54), ang: 180 });
 // R_ISET: ICH = 1188V / 1.2k = 0.99A (datasheet "Setting Charge Current").
 const R1 = placeByPin("R1", "Device:R", "1", P(60.96, U1.pin("2").y), { rot: 270, value: "1.2k 1%", fp: FP.r0603 });
 wire(U1.pin("2"), R1.pin("1"));
@@ -303,18 +286,37 @@ gnd(wire(J3.pin("2"), P(91.44, J3.pin("2").y), P(91.44, RAIL + 7.62)));
 wire(P(109.22, RAIL + 5.08), P(109.22, RAIL + 7.62));
 flag(P(109.22, RAIL + 5.08));
 gnd(P(109.22, RAIL + 7.62));
-// M2 mounting holes (non-plated), one at each end of the board
-for (let i = 0; i < 2; i++)
-  place(`H${i + 1}`, "Mechanical:MountingHole", 121.92 + i * 12.7, RAIL, { value: "M2", fp: FP.hole });
+// Battery NTC (datasheet Figure 7): R4 from VIN to TEMP, R5 from TEMP to GND with the thermistor
+// on J5 in parallel. Charging runs while TEMP is between 45 % and 80 % of VIN. For a 10k B3950 NTC
+// and a 0-45 C window the datasheet's formulas give 4.86k and 46.1k; 4.7k / 47k give ~1-46 C.
+// With no thermistor fitted TEMP would sit at 91 % of VIN and block charging, so JP2 (normally
+// closed) grounds TEMP, which disables the function; cut JP2 when fitting an NTC.
+const tX = 142.24, tY = 53.34;
+LABELS.push({ name: "VIN", at: P(127, tY), ang: 180 });
+const R4 = placeByPin("R4", "Device:R", "1", P(129.54, tY), { rot: 90, value: "4.7k 1%", fp: FP.r0402 });
+wire(P(127, tY), R4.pin("1"));
+wire(R4.pin("2"), P(tX, tY));
+LABELS.push({ name: "TEMP", at: P(tX, tY), ang: 90 });
+const R5 = placeByPin("R5", "Device:R", "1", P(tX + 2.54, tY), { rot: 90, value: "47k 1%", fp: FP.r0402 });
+wire(P(tX, tY), R5.pin("1"));
+gnd(wire(R5.pin("2"), P(R5.pin("2").x + 2.54, tY), P(R5.pin("2").x + 2.54, tY + 2.54)));
+const J5 = placeByPin("J5", "Connector_Generic:Conn_01x02", "1", P(149.86, tY + 10.16), { value: "NTC", fp: PADS, noBom: true });
+wire(P(tX, tY), P(tX, tY + 10.16), J5.pin("1"));
+junction(P(tX, tY));
+gnd(wire(J5.pin("2"), P(147.32, J5.pin("2").y), P(147.32, J5.pin("2").y + 2.54)));
+const JP2 = placeByPin("JP2", "Jumper:SolderJumper_2_Bridged", "1", P(tX + 2.54, tY + 20.32), { value: "NTC_OFF", fp: FP.jumperClosed });
+wire(P(tX, tY + 10.16), P(tX, tY + 20.32), JP2.pin("1"));
+junction(P(tX, tY + 10.16));
+gnd(wire(JP2.pin("2"), P(JP2.pin("2").x + 2.54, tY + 20.32), P(JP2.pin("2").x + 2.54, tY + 22.86)));
 TEXTS.push({
   at: P(50.8, 116.84),
   text: [
-    "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 20 x 15 mm, two M2 holes. No net carries more than 1 A.",
-    "- J4 SOLAR: up to four 5V panels on S1-S4 (+) with one shared GND pad. Each + passes its own 1N5819WS (D3-D6) to VIN,",
-    "  so panels can't feed current into each other. CN3163 input 4.4-6V after the ~0.3-0.4V diode drop, absolute max 6.5V:",
-    "  panel Voc must stay below 6.5V.",
+    "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 14.4 x 12.2 mm. No net carries more than 1 A.",
+    "- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.",
     "- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel",
-    "  sags toward 4.4V and by thermal regulation (~130C die). TEMP grounded (no NTC).",
+    "  sags toward 4.4V and by thermal regulation (~130C die).",
+    "- J5 NTC: optional 10k B3950 battery thermistor (TEMP, GND). R4/R5 set a ~1-46C charge window. JP2 (closed as made)",
+    "  grounds TEMP, which disables temperature sensing: cut JP2 when fitting the NTC.",
     "- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Fed from VIN through JP1, a normally open",
     "  solder jumper: bridge it to enable the LEDs. Left open the LEDs are off and draw nothing.",
     "- J1 BATTERY: 1S Li-ion, 1 = BAT_IN (+), 2 = GND. Q1 AO3401A (gate to GND) passes it to BAT+ and blocks a reversed cell.",
@@ -421,7 +423,7 @@ const out = [
 		(title "SNAP Mini Power Controller")
 		(date "2026-10-30")
 		(rev "0.2")
-		(comment 1 "4 solar inputs -> CN3163 -> Q1 -> battery; switch -> load. 20 x 15 mm")
+		(comment 1 "Solar -> CN3163 -> Q1 -> battery; switch -> load; battery NTC. 14.4 x 12.2 mm")
 	)
 	(lib_symbols
 ${Object.values(SYMS).map((s) => "\t\t" + indent(s.text.replace(/^\t/, ""))).join("\n")}
