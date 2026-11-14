@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # Renders the top and bottom board views for the README and draws the board's width and height
 # on them. Run with KiCad's Python (it has pcbnew and Pillow):
 #   "C:/Program Files/KiCad/10.0/bin/python.exe" tools/render-images.py

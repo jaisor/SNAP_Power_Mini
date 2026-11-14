@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # Builds the whole SNAP Mini Power Controller board from the schematic netlist: footprints placed and linked to
 # their symbols, hand-placed tracks and vias, GND pours on both layers, silkscreen, and a
 # square-cornered 14.4 x 12.2 mm outline (V-score panel friendly).

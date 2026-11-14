@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // Generates the SNAP Mini Power Controller schematic for KiCad 10: wire pads for a solar panel,
 // battery, switch, load and an optional battery NTC, a CN3163 linear solar charger with CHRG/DONE
 // LEDs behind a solder jumper, an AO3401A reverse-battery guard, and the switch in series with

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // Turns KiCad's BOM and position CSVs into JLCPCB-style assembly files, writes the fab notes and
 // zips the Gerbers. Run from the repo root after the kicad-cli exports (see CLAUDE.md, "Fabrication"):
 //   node tools/fab-package.js [output dir, default: output/fab]

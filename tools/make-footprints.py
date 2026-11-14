@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # Writes the project footprints into SNAP_Power_Mini.pretty. Run from the repo root with KiCad's Python:
 #   "C:/Program Files/KiCad/10.0/bin/python.exe" tools/make-footprints.py
 import pathlib
