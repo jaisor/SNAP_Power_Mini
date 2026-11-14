@@ -53,7 +53,16 @@ The width and height are also marked on the top and bottom pictures.
 
 ![Bottom](docs/images/pcb-bottom.png)
 
-The back is a ground plane with two jumpers (battery + up to the charger's sense pin, and the panel input round to the LED jumper) and six thermal vias under the CN3163.
+The back carries the short name (SNAP Power Mini), the limits and a warning:
+
+| Printed | Meaning |
+|---|---|
+| CHECK POLARITY | Check + and − on every wire before connecting. The battery input survives a reversed cell; the solar input and the load output have no protection |
+| SOL MAX 6V 1A | Solar panel: 6 V maximum in normal use, and never above 6.5 V open-circuit. The charger draws at most 1 A; a panel that can supply more is fine as long as its voltage is within the limit |
+| OUT MAX 1A | Load: 1 A maximum, continuous. There is no fuse and no over-current or low-voltage cut-off on the output, so use a protected cell |
+| AS IS NO WARRANTY | See the disclaimer below |
+
+Under the text, the back is a ground plane with two jumpers (battery + up to the charger's sense pin, and the panel input round to the LED jumper) and six thermal vias under the CN3163.
 
 ## Fabrication
 
@@ -67,6 +76,14 @@ The package is generated into `output/fab/`. It isn't tracked in git; regenerate
 | `FAB_NOTES.txt` | Order settings and assembly cautions |
 
 The CN3163 (C559031) and the two LEDs are JLCPCB Extended parts; the AO3401A is C15127. Check the rotation of U1 and Q1 and the polarity of the LEDs in the assembler's preview before ordering. The wire pads and the two solder jumpers aren't parts, so they're not in the BOM or placement file.
+
+## Disclaimer
+
+This board is a hobby design for people who know how to handle lithium cells. It has not been tested or certified to any safety standard (UL, CE, FCC, UN 38.3 or other). Lithium-ion cells can catch fire or explode if they are over-charged, short-circuited, reverse-connected, punctured or charged outside their temperature range. You are responsible for checking polarity, staying within the limits printed on the board, choosing a protected cell, and deciding whether the board suits your use.
+
+THE DESIGN FILES AND ANY BOARD MADE FROM THEM ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE AUTHOR IS NOT LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES, INCLUDING DAMAGE TO BATTERIES, PANELS OR CONNECTED EQUIPMENT, LOSS OF DATA, FIRE OR INJURY, AND THE AUTHOR'S TOTAL LIABILITY FOR ANY CLAIM IS LIMITED TO THE PRICE PAID FOR THE BOARD.
+
+Some jurisdictions do not allow the exclusion of implied warranties or the limitation of liability for certain damages, so parts of the above may not apply to you; nothing here limits rights that cannot be limited by law.
 
 ## Regenerating the design
 

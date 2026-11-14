@@ -108,8 +108,19 @@ VIAS = {
 LABELS = [("NTC", 3.2, 2.7), ("-OUT+", 7.2, 2.7), ("SW", 11.2, 2.7),
           ("+SOL-", 2.25, H - 2.7), ("+BAT-", 12.15, H - 2.7)]
 LABEL_TEXT = 0.8
-# Back: three lines in the bands between the vias.
-BACK_TEXT = [("SNAP Mini Power", 0.8, 2.2), ("Controller v2.0", 0.8, 3.97), ("JaisorGadgets", 0.8, 7.9)]  # text, height, y
+# Back: name, warnings and ratings in the bands between the vias. (text, height, y, x of the text's
+# centre). x is in board coordinates like everything else, so on the back, which is seen mirrored,
+# a larger x is further left: the two ratings rows read "SOL MAX | 6V 1A" and "OUT MAX | 1A" with
+# U1's thermal vias between the columns.
+BACK_TEXT = [
+    ("SNAP Power Mini", 0.8, 2.2, W / 2),
+    ("CHECK POLARITY", 0.8, 3.97, W / 2),
+    ("SOL MAX", 0.8, 5.3, 11.1), ("6V 1A", 0.8, 5.3, 4.05),
+    ("OUT MAX", 0.8, 6.6, 11.1), ("1A", 0.8, 6.6, 4.05),
+    ("JaisorGadgets", 0.8, 7.9, W / 2),
+    ("AS IS NO WARRANTY", 0.8, 10.07, W / 2),
+    ("v2.0", 0.8, 11.2, 10.0),
+]
 
 
 def mm(v):
@@ -253,11 +264,12 @@ def main():
 
     for text, x, y in LABELS:
         silk_text(board, text, x, y, LABEL_TEXT, thickness=0.12)
-    # Back: module ID; a line is shrunk only if it is wider than the board less 1 mm a side.
-    for text, height, y in BACK_TEXT:
-        t = silk_text(board, text, W / 2, y, height, layer=pcbnew.B_SilkS, thickness=0.1)
+    # Back: name, warnings, ratings; a line is shrunk only if it is wider than the board less 1 mm a side.
+    for text, height, y, x in BACK_TEXT:
+        t = silk_text(board, text, x, y, height, layer=pcbnew.B_SilkS, thickness=0.1)
         width = pcbnew.ToMM(t.GetEffectiveTextShape().BBox().GetWidth())
         room = W - 2 * 1.0
+        print(f"back text {text!r}: {width:.2f} mm wide, x {x - width / 2:.2f}..{x + width / 2:.2f}")
         if width > room:
             s = height * room / width
             t.SetTextSize(pcbnew.VECTOR2I(mm(s), mm(s)))
