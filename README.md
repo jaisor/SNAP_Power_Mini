@@ -1,5 +1,7 @@
 # Mini PDB
 
+> **Archived branch.** This board has moved to its own repository, [SNAP Handheld PDB](https://github.com/jaisor/SNAP_Handheld_PDB), where it is licensed and maintained. This branch is kept read-only as the starting point of [SNAP Power Mini](https://github.com/jaisor/SNAP_Power_Mini), whose `main` branch became the solar charger board. Don't build from or contribute to this branch.
+
 Minimal power distribution board: solder pads for a battery, a load, and an external switch that breaks the battery's positive wire. 20 × 10 mm, two M2 mounting holes, no components.
 
 ![Top](docs/images/pcb-top.png)
