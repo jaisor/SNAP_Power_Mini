@@ -7,8 +7,8 @@
 # Netlist: kicad-cli sch export netlist --format kicadxml -o output/net.xml SNAP_Power_Mini.kicad_sch
 #
 # Layout (top view), no mounting holes. Two rows of wire pads with the charger between them:
-#   NTC   -OUT+   SW                 top row:    J5, J3, J2 (SW_B = OUT+ bridged on F.Cu)
-#   R4 R5 JP2 |        | D1 R2 JP1   left of U1:  NTC network above R1 (ISET)
+#   NTC   -OUT+   SW                 top row:    JP2, J3, J2 (SW_B = OUT+ bridged on F.Cu)
+#   R4 R5     |        | D1 R2 JP1   left of U1:  NTC divider above R1 (ISET)
 #      R1     | CN3163 | D2 R3       right of U1: status LEDs + resistors, JP1, above C2 (BAT)
 #             |        |   C2
 #   +SOL-  C1   Q1   +BAT-           bottom row: J4, C1 (VIN) and Q1 (reverse-battery guard), J1
@@ -36,7 +36,7 @@ ZONE_CLEAR = 0.25
 
 # ref: (x, y, rotation) of the footprint origin, mm from the board's top-left corner.
 PLACEMENT = {
-    "J5": (3.2, TOP_ROW_Y, 180),  # NTC:     2 = GND (x 2.2), 1 = TEMP (x 4.2)
+    "JP2": (3.2, TOP_ROW_Y, 180),  # NTC:    2 = GND (x 2.2), 1 = TEMP (x 4.2), joined by a link until cut
     "J3": (7.2, TOP_ROW_Y, 180),  # LOAD:    2 = GND (x 6.2), 1 = VOUT (x 8.2)
     "J2": (11.2, TOP_ROW_Y, 180),  # SWITCH:  2 = VOUT (x 10.2), 1 = BAT+ (x 12.2)
     "J4": (2.25, BOT_ROW_Y, 0),  # SOLAR:   1 = VIN (x 1.25), 2 = GND (x 3.25)
@@ -45,7 +45,6 @@ PLACEMENT = {
     # Left of U1, vertical: TEMP pads up, VIN / GND pads down
     "R4": (0.82, 4.17, 90),  # VIN (pad 1, bottom) to TEMP (pad 2, top)
     "R5": (1.86, 4.17, 270),  # TEMP (pad 1, top) to GND
-    "JP2": (2.88, 4.17, 270),  # TEMP (pad 1, top) to GND, closed until cut
     "R1": (2.7, 7.0, 270),  # ISET (pad 1, top) to GND
     # Bottom row, between the solar and battery pads
     "C1": (4.98, 10.17, 270),  # VIN bypass under pin 4; pad 1 (VIN) up
@@ -76,10 +75,10 @@ TRACKS = [
     ("/BAT+", "F", PWR, [("Q1", "2"), (9.6, 8.7), ("U1", "5"), ("C2", "1")]),
     ("/BAT+", "B", PWR, [(9.6, 8.7), (9.6, 3.1)]),
     ("/BAT+", "F", PWR, [("J2", "1"), (12.2, 2.6), (11.85, 2.95), (9.9, 2.95), (9.6, 3.1), ("U1", "8")]),
-    # TEMP: NTC pad straight down into pin 1; R4, R5 and JP2 joined along their top pads
-    ("/TEMP", "F", SIG, [("J5", "1"), (4.2, 4.045)]),
-    ("/TEMP", "F", SIG, [("R4", "2"), ("R5", "1"), ("JP2", "1"), (4.2, 3.72)]),
-    ("GND", "F", GND_W, [("JP2", "2"), ("R5", "2"), (1.75, 5.45)]),
+    # TEMP: NTC pad straight down into pin 1; R4 and R5 joined along their top pads
+    ("/TEMP", "F", SIG, [("JP2", "1"), (4.2, 4.045)]),
+    ("/TEMP", "F", SIG, [("R4", "2"), ("R5", "1"), (4.2, 3.72)]),
+    ("GND", "F", GND_W, [("R5", "2"), (1.75, 5.45)]),
     # ISET resistor, kept short (datasheet layout note 1)
     ("Net-(U1-ISET)", "F", SIG, [("U1", "2"), (3.3, 5.6), ("R1", "1")]),
     ("GND", "F", GND_W, [("R1", "2"), (1.7, 7.775)]),
@@ -98,7 +97,7 @@ TRACKS = [
 VIAS = {
     "/VIN": [(6.2, 9.25), (13.5, 2.85)],
     "/BAT+": [(9.6, 8.7), (9.6, 3.1)],
-    # The NTC network's and R1's returns, Q1's gate, vias in the NTC-, OUT-, SOL- and BAT- pads,
+    # R5's and R1's returns, Q1's gate, vias in the NTC-, OUT-, SOL- and BAT- pads,
     # and six thermal vias in U1's exposed pad
     "GND": [(1.75, 5.45), (1.7, 7.775), (7.25, 11.345), (2.2, TOP_ROW_Y), (5.8, TOP_ROW_Y), (6.6, TOP_ROW_Y),
             (2.85, BOT_ROW_Y), (3.65, BOT_ROW_Y), (12.75, BOT_ROW_Y), (13.55, BOT_ROW_Y)]
@@ -120,7 +119,7 @@ BACK_TEXT = [
     ("OUT MAX", 0.8, 6.6, 11.1), ("1A", 0.8, 6.6, 4.05),
     ("JaisorGadgets", 0.8, 7.9, W / 2),
     ("AS IS NO WARRANTY", 0.8, 10.07, W / 2),
-    ("v2.0", 0.8, 11.2, 10.0),
+    ("v1.0", 0.8, 11.2, 10.0),
 ]
 
 
@@ -191,7 +190,7 @@ def main():
     board = pcbnew.NewBoard(pcb_path)
     tb = board.GetTitleBlock()
     tb.SetTitle("SNAP Mini Power Controller")
-    tb.SetRevision("0.2")
+    tb.SetRevision("1.0")
     tb.SetDate("2026-10-30")
     tb.SetComment(0, "Solar -> CN3163 -> Q1 -> battery; switch -> load; battery NTC. 14.4 x 12.2 mm")
 

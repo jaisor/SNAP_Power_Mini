@@ -7,7 +7,7 @@
 	(title_block
 		(title "SNAP Mini Power Controller")
 		(date "2026-10-30")
-		(rev "0.2")
+		(rev "1.0")
 		(comment 1 "Solar -> CN3163 -> Q1 -> battery; switch -> load; battery NTC. 14.4 x 12.2 mm")
 	)
 	(lib_symbols
@@ -1862,12 +1862,6 @@
 		(color 0 0 0 0)
 		(uuid "7cda8783-b52d-4801-bcfa-2948377a28cf")
 	)
-	(junction
-		(at 142.24 63.5)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "95613e4b-bd87-4827-b89e-3c97f8f81cc8")
-	)
 	(wire
 		(pts
 			(xy 27.94 40.64) (xy 40.64 40.64)
@@ -2330,75 +2324,35 @@
 	)
 	(wire
 		(pts
-			(xy 142.24 63.5) (xy 149.86 63.5)
+			(xy 142.24 63.5) (xy 144.78 63.5)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "487109e4-b64a-4506-9868-a8fa0590acd7")
+		(uuid "99f58568-f906-4859-afda-aa238e471056")
 	)
 	(wire
 		(pts
-			(xy 149.86 66.04) (xy 147.32 66.04)
+			(xy 154.94 63.5) (xy 157.48 63.5)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "101e72e3-4c28-429c-a106-eb43a050e00b")
+		(uuid "cb2373f6-ff03-4dd8-a944-b83c1d7cb62f")
 	)
 	(wire
 		(pts
-			(xy 147.32 66.04) (xy 147.32 68.58)
+			(xy 157.48 63.5) (xy 157.48 66.04)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "2bdac14c-8769-4dd5-bebe-9b47a955f917")
+		(uuid "e6ba6b32-e1be-412c-809a-2706830a7764")
 	)
-	(wire
-		(pts
-			(xy 142.24 63.5) (xy 142.24 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7c6ee258-074a-4b2f-a995-fd9b70c40095")
-	)
-	(wire
-		(pts
-			(xy 142.24 73.66) (xy 144.78 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5d91c30b-624e-423e-906e-48924114311a")
-	)
-	(wire
-		(pts
-			(xy 154.94 73.66) (xy 157.48 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e34e3d6b-c3ee-414d-a112-626568f1ea5a")
-	)
-	(wire
-		(pts
-			(xy 157.48 73.66) (xy 157.48 76.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4ebbf4d8-4719-4c8a-aed3-648dcd178538")
-	)
-	(text "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 14.4 x 12.2 mm. No net carries more than 1 A.\n- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.\n- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel\n  sags toward 4.4V and by thermal regulation (~130C die).\n- J5 NTC: optional 10k B3950 battery thermistor (TEMP, GND). R4/R5 set a ~1-46C charge window. JP2 (closed as made)\n  grounds TEMP, which disables temperature sensing: cut JP2 when fitting the NTC.\n- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Fed from VIN through JP1, a normally open\n  solder jumper: bridge it to enable the LEDs. Left open the LEDs are off and draw nothing.\n- J1 BATTERY: 1S Li-ion, 1 = BAT_IN (+), 2 = GND. Q1 AO3401A (gate to GND) passes it to BAT+ and blocks a reversed cell.\n  The charger feeds BAT+ directly, so the cell charges with the switch open.\n- J2 SWITCH: off-board SPST in series with battery + toward the load. 1 = BAT+, 2 = VOUT.\n- J3 LOAD: 1 = VOUT (switched battery +), 2 = GND."
+	(text "SNAP Mini Power Controller: solar charger + power distribution for a handheld LoRa mesh node, 14.4 x 12.2 mm. No net carries more than 1 A.\n- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.\n- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel\n  sags toward 4.4V and by thermal regulation (~130C die).\n- JP2 NTC: pads for an optional 10k B3950 battery thermistor (TEMP, GND). R4/R5 set a ~1-46C charge window. As made the\n  pads are joined by a copper link, which grounds TEMP and disables temperature sensing: cut the link, then fit the NTC.\n- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Fed from VIN through JP1, a normally open\n  solder jumper: bridge it to enable the LEDs. Left open the LEDs are off and draw nothing.\n- J1 BATTERY: 1S Li-ion, 1 = BAT_IN (+), 2 = GND. Q1 AO3401A (gate to GND) passes it to BAT+ and blocks a reversed cell.\n  The charger feeds BAT+ directly, so the cell charges with the switch open.\n- J2 SWITCH: off-board SPST in series with battery + toward the load. 1 = BAT+, 2 = VOUT.\n- J3 LOAD: 1 = VOUT (switched battery +), 2 = GND."
 		(exclude_from_sim no)
 		(at 50.8 116.84 0)
 		(effects
@@ -4400,140 +4354,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector_Generic:Conn_01x02")
-		(at 154.94 63.5 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "09923bcc-757f-441b-a6fb-db3677aac486")
-		(property "Reference" "J5"
-			(at 154.94 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "NTC"
-			(at 159.13 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "SNAP_Power_Mini:WirePad_1x02_SMD_1.4x1.5mm_P2.0mm"
-			(at 154.94 63.5 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 154.94 63.5 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 154.94 63.5 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "2f07e57f-522c-4565-9141-1902d6e7c0c4")
-		)
-		(pin "2"
-			(uuid "25c4b750-6c2b-42ce-a3c0-c4bf1dfea62c")
-		)
-		(instances
-			(project "SNAP_Power_Mini"
-				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "J5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 147.32 68.58 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(dnp no)
-		(uuid "28290b7e-f1bc-49fd-bf88-d89ef80508c3")
-		(property "Reference" "#PWR011"
-			(at 147.32 68.58 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 147.32 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 147.32 68.58 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 147.32 68.58 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 147.32 68.58 0)
-			(hide yes)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "96a85fe7-07c6-4237-bba0-f2f0338d0b6c")
-		)
-		(instances
-			(project "SNAP_Power_Mini"
-				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR011")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Jumper:SolderJumper_2_Bridged")
-		(at 149.86 73.66 0)
+		(at 149.86 63.5 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -4541,23 +4363,23 @@
 		(dnp no)
 		(uuid "6a0d99db-e768-44b6-9c9e-3f0b65171172")
 		(property "Reference" "JP2"
-			(at 149.86 69.85 0)
+			(at 149.86 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "NTC_OFF"
-			(at 149.86 77.47 0)
+		(property "Value" "NTC"
+			(at 149.86 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "SNAP_Power_Mini:SolderJumper-2_P0.9mm_Bridged_Pad0.6x0.8mm"
-			(at 149.86 73.66 0)
+		(property "Footprint" "SNAP_Power_Mini:WirePad_1x02_SMD_1.4x1.5mm_P2.0mm_Bridged"
+			(at 149.86 63.5 0)
 			(hide yes)
 			(effects
 				(font
@@ -4566,7 +4388,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 149.86 73.66 0)
+			(at 149.86 63.5 0)
 			(hide yes)
 			(effects
 				(font
@@ -4575,7 +4397,7 @@
 			)
 		)
 		(property "Description" "Solder Jumper, 2-pole, closed/bridged"
-			(at 149.86 73.66 0)
+			(at 149.86 63.5 0)
 			(hide yes)
 			(effects
 				(font
@@ -4600,15 +4422,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 157.48 76.2 0)
+		(at 157.48 66.04 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
 		(on_board no)
 		(dnp no)
-		(uuid "10527c8d-e260-4dd3-85fb-a0d967dcd5fe")
-		(property "Reference" "#PWR012"
-			(at 157.48 76.2 0)
+		(uuid "28290b7e-f1bc-49fd-bf88-d89ef80508c3")
+		(property "Reference" "#PWR011"
+			(at 157.48 66.04 0)
 			(hide yes)
 			(effects
 				(font
@@ -4617,7 +4439,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 157.48 80.01 0)
+			(at 157.48 69.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4625,7 +4447,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 157.48 76.2 0)
+			(at 157.48 66.04 0)
 			(hide yes)
 			(effects
 				(font
@@ -4634,7 +4456,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 157.48 76.2 0)
+			(at 157.48 66.04 0)
 			(hide yes)
 			(effects
 				(font
@@ -4643,7 +4465,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 157.48 76.2 0)
+			(at 157.48 66.04 0)
 			(hide yes)
 			(effects
 				(font
@@ -4652,12 +4474,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "10128eff-0d6a-40c8-aae4-440870fd679f")
+			(uuid "96a85fe7-07c6-4237-bba0-f2f0338d0b6c")
 		)
 		(instances
 			(project "SNAP_Power_Mini"
 				(path "/9f8e6b92-c8bc-4846-8b06-b71484d019ca"
-					(reference "#PWR012")
+					(reference "#PWR011")
 					(unit 1)
 				)
 			)

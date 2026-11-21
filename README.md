@@ -6,7 +6,7 @@ Minimal solar charger and power distribution board, sized to power a mini handhe
 
 | Pads | Where | |
 |---|---|---|
-| **NTC** | top row, left | optional 10 kΩ battery thermistor (non-polar) |
+| **NTC** | top row, left | optional 10 kΩ battery thermistor (non-polar); joined by a copper link as delivered |
 | **−OUT+** | top row, middle | load − and + (switched) |
 | **SW** | top row, right | the two switch wires (non-polar) |
 | **+SOL−** | bottom row, left | solar panel + and − |
@@ -16,7 +16,7 @@ The charger feeds the battery directly, so the battery keeps charging with the s
 
 **Status LEDs (JP1):** JP1 is the pair of tiny pads in the top-right corner of the parts area, right of the LEDs' resistors. It's open as delivered, so the LEDs are off and draw nothing. Bridge it with a blob of solder to turn them on; they then take about 2–3 mA from the panel while charging.
 
-**Battery thermistor (JP2):** charging works without a thermistor: JP2, the tiny pad pair just left of the IC's top-left pin, is closed by a copper link and switches temperature sensing off. To use one, solder a 10 kΩ B3950 NTC (taped to the cell) on the NTC pads and cut JP2's link with a knife. The charger then only charges between about 1 °C and 46 °C. Don't fit the NTC without cutting JP2, or the sensing stays off.
+**Battery thermistor (NTC pads, JP2):** charging works without a thermistor. The two NTC pads are joined by a short strip of bare copper, which switches temperature sensing off. To use a thermistor, cut that strip with a knife and check with a meter that the pads are no longer shorted. Then solder a 10 kΩ B3950 NTC (taped to the cell) to the same pads. The charger then only charges between about 1 °C and 46 °C. A thermistor soldered on without cutting the strip is shorted out, so the sensing stays off.
 
 ## Dimensions
 
@@ -41,7 +41,7 @@ The width and height are also marked on the top and bottom pictures.
 - Solar input: 4.4–6 V. **Absolute maximum 6.5 V**: use a 5 V panel whose open-circuit voltage stays under 6.5 V. No reverse-polarity protection on the panel input.
 - Battery reverse-polarity protection: AO3401A P-MOSFET in the battery + line, gate to GND. A correctly connected cell turns it fully on (~60 mΩ, both directions, so charging works through it); a reversed cell leaves it off and nothing on the board sees the wrong polarity.
 - Charging: 4.2 V float, 0.99 A maximum (R1 = 1.2 kΩ). The CN3163 lowers the current by itself when the panel sags toward 4.4 V or the chip reaches ~130 °C. On a board this small it will run hot and throttle at full current, which is normal.
-- Battery temperature (optional): 10 kΩ B3950 NTC on the NTC pads, JP2 cut. Charging is suspended outside ~1–46 °C (4.7 kΩ / 47 kΩ divider from the panel input). With JP2 closed the divider draws ~1 mA from the panel while the sun is up.
+- Battery temperature (optional): 10 kΩ B3950 NTC on the NTC pads, with the copper link between them cut. Charging is suspended outside ~1–46 °C (4.7 kΩ / 47 kΩ divider from the panel input). With the link intact the divider draws ~1 mA from the panel while the sun is up.
 - Status LEDs: red = charging, green = charge complete. Enabled by bridging JP1 (open by default). They're powered from the panel, so they're off without sun.
 - Parts: CN3163 (eSOP-8), AO3401A (SOT-23), 1.2 kΩ 1 %, 2 × 10 µF 10 V (0603); red and green LEDs, 2 × 1 kΩ, 4.7 kΩ and 47 kΩ 1 % (0402). Top side only
 
@@ -70,12 +70,12 @@ The package is generated into `output/fab/`. It isn't tracked in git; regenerate
 
 | File | Contents |
 |---|---|
-| `SNAP_Power_Mini_v2.0_gerbers.zip` | Upload this to the board house: Gerbers incl. solder paste, drill files, job file. 2 layers, 1.6 mm, 1 oz copper |
-| `SNAP_Power_Mini_v2.0_BOM.csv` | BOM in JLCPCB format with LCSC part numbers for every line |
-| `SNAP_Power_Mini_v2.0_CPL.csv` | Pick-and-place file, top side only, same coordinates as the Gerbers |
+| `SNAP_Power_Mini_v1.0_gerbers.zip` | Upload this to the board house: Gerbers incl. solder paste, drill files, job file. 2 layers, 1.6 mm, 1 oz copper |
+| `SNAP_Power_Mini_v1.0_BOM.csv` | BOM in JLCPCB format with LCSC part numbers for every line |
+| `SNAP_Power_Mini_v1.0_CPL.csv` | Pick-and-place file, top side only, same coordinates as the Gerbers |
 | `FAB_NOTES.txt` | Order settings and assembly cautions |
 
-The CN3163 (C559031) and the two LEDs are JLCPCB Extended parts; the AO3401A is C15127. Check the rotation of U1 and Q1 and the polarity of the LEDs in the assembler's preview before ordering. The wire pads and the two solder jumpers aren't parts, so they're not in the BOM or placement file.
+All parts are in JLCPCB's Basic library except the CN3163 (C559031) and the two 0402 LEDs. Those three are Extended parts, which add a loading fee per part type, and none of them has a Basic equivalent that fits this board. The AO3401A is C15127. Check the rotation of U1 and Q1 and the polarity of the LEDs in the assembler's preview before ordering. The wire pads and the LED solder jumper aren't parts, so they're not in the BOM or placement file.
 
 ## Safety
 

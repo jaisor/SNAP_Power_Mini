@@ -53,6 +53,27 @@ def wirepads(n, order):
 write("WirePad_1x02_SMD_1.4x1.5mm_P2.0mm",
       "Pair of SMD wire solder pads side by side, 1.4x1.5mm, 2.0mm pitch, for hand-soldered wires up to ~24 AWG (1 A). No silkscreen: labels are on the board.",
       "solder wire pad SMD pair", "smd exclude_from_pos_files exclude_from_bom", wirepads(2, ["1", "2"]), 1.6)
+# The same pair joined by a 0.3 mm copper link across the 0.6 mm gap (a net tie, so DRC accepts the
+# two nets touching): wire pads and normally closed jumper in one. The link is left out of the
+# solder mask so it shows as bare copper; cut it with a knife before soldering wires to the pads.
+def poly(x0, y0, x1, y1, layer):
+    return f'''	(fp_poly
+		(pts
+			(xy {x0} {y0}) (xy {x1} {y0}) (xy {x1} {y1}) (xy {x0} {y1})
+		)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill yes)
+		(layer "{layer}")
+	)'''
+gap = round(P - PW, 3)
+write("WirePad_1x02_SMD_1.4x1.5mm_P2.0mm_Bridged",
+      "Pair of SMD wire solder pads, 1.4x1.5mm, 2.0mm pitch, joined by a 0.3mm copper link (exposed, no mask); cut the link to separate them.",
+      "solder wire pad SMD pair jumper closed", "smd exclude_from_pos_files exclude_from_bom allow_soldermask_bridges",
+      ['	(net_tie_pad_groups "1, 2")'] + wirepads(2, ["1", "2"])
+      + [poly(-gap/2 - 0.05, -0.15, gap/2 + 0.05, 0.15, "F.Cu"), poly(-gap/2, -0.25, gap/2, 0.25, "F.Mask")], 1.6)
 # Normally open solder jumper: 0.6 x 0.8 mm pads, 0.3 mm gap, bridged by hand with a blob of solder.
 # Never populated, so the courtyard is only 0.1 mm outside the pads.
 jp = [rect(-0.75, -0.4, 0.75, 0.4, "F.Fab", 0.1), rect(-0.85, -0.5, 0.85, 0.5, "F.CrtYd", 0.05),
@@ -60,20 +81,3 @@ jp = [rect(-0.75, -0.4, 0.75, 0.4, "F.Fab", 0.1), rect(-0.85, -0.5, 0.85, 0.5, "
 write("SolderJumper-2_P0.9mm_Open_Pad0.6x0.8mm",
       "Tiny normally open solder jumper, 0.6x0.8mm pads, 0.3mm gap; close with a solder blob.",
       "solder jumper open SPST", "smd exclude_from_pos_files exclude_from_bom", jp, 1.0)
-# Normally closed version: the same pads joined by a 0.3 mm copper link (a net tie, so DRC accepts
-# the two nets touching); cut the link with a knife to open it.
-link = '''	(fp_poly
-		(pts
-			(xy -0.15 -0.15) (xy 0.15 -0.15) (xy 0.15 0.15) (xy -0.15 0.15)
-		)
-		(stroke
-			(width 0)
-			(type solid)
-		)
-		(fill yes)
-		(layer "F.Cu")
-	)'''
-write("SolderJumper-2_P0.9mm_Bridged_Pad0.6x0.8mm",
-      "Tiny normally closed solder jumper, 0.6x0.8mm pads joined by a 0.3mm copper link; cut the link to open it.",
-      "solder jumper closed SPST", "smd exclude_from_pos_files exclude_from_bom allow_soldermask_bridges",
-      ['	(net_tie_pad_groups "1, 2")'] + jp + [link], 1.0)

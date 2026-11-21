@@ -192,7 +192,8 @@ function flag(at, rot) {
 const PADS = "SNAP_Power_Mini:WirePad_1x02_SMD_1.4x1.5mm_P2.0mm";
 const FP = {
   jumper: "SNAP_Power_Mini:SolderJumper-2_P0.9mm_Open_Pad0.6x0.8mm",
-  jumperClosed: "SNAP_Power_Mini:SolderJumper-2_P0.9mm_Bridged_Pad0.6x0.8mm",
+  // Wire pads joined by a cuttable copper link: the NTC pads and their disable jumper in one.
+  padsClosed: "SNAP_Power_Mini:WirePad_1x02_SMD_1.4x1.5mm_P2.0mm_Bridged",
   r0603: "Resistor_SMD:R_0603_1608Metric",
   c0603: "Capacitor_SMD:C_0603_1608Metric",
   // The status LEDs and their resistors are 0402 so they fit beside the IC on this small board.
@@ -288,10 +289,11 @@ wire(P(109.22, RAIL + 5.08), P(109.22, RAIL + 7.62));
 flag(P(109.22, RAIL + 5.08));
 gnd(P(109.22, RAIL + 7.62));
 // Battery NTC (datasheet Figure 7): R4 from VIN to TEMP, R5 from TEMP to GND with the thermistor
-// on J5 in parallel. Charging runs while TEMP is between 45 % and 80 % of VIN. For a 10k B3950 NTC
-// and a 0-45 C window the datasheet's formulas give 4.86k and 46.1k; 4.7k / 47k give ~1-46 C.
-// With no thermistor fitted TEMP would sit at 91 % of VIN and block charging, so JP2 (normally
-// closed) grounds TEMP, which disables the function; cut JP2 when fitting an NTC.
+// on the JP2 pads in parallel. Charging runs while TEMP is between 45 % and 80 % of VIN. For a 10k
+// B3950 NTC and a 0-45 C window the datasheet's formulas give 4.86k and 46.1k; 4.7k / 47k give
+// ~1-46 C. With no thermistor fitted TEMP would sit at 91 % of VIN and block charging, so the two
+// NTC pads are joined by a copper link (JP2, normally closed), which grounds TEMP and disables the
+// function; cut the link, then solder the NTC to the same pads.
 const tX = 142.24, tY = 53.34;
 LABELS.push({ name: "VIN", at: P(127, tY), ang: 180 });
 const R4 = placeByPin("R4", "Device:R", "1", P(129.54, tY), { rot: 90, value: "4.7k 1%", fp: FP.r0402 });
@@ -301,14 +303,10 @@ LABELS.push({ name: "TEMP", at: P(tX, tY), ang: 90 });
 const R5 = placeByPin("R5", "Device:R", "1", P(tX + 2.54, tY), { rot: 90, value: "47k 1%", fp: FP.r0402 });
 wire(P(tX, tY), R5.pin("1"));
 gnd(wire(R5.pin("2"), P(R5.pin("2").x + 2.54, tY), P(R5.pin("2").x + 2.54, tY + 2.54)));
-const J5 = placeByPin("J5", "Connector_Generic:Conn_01x02", "1", P(149.86, tY + 10.16), { value: "NTC", fp: PADS, noBom: true });
-wire(P(tX, tY), P(tX, tY + 10.16), J5.pin("1"));
+const JP2 = placeByPin("JP2", "Jumper:SolderJumper_2_Bridged", "1", P(tX + 2.54, tY + 10.16), { value: "NTC", fp: FP.padsClosed });
+wire(P(tX, tY), P(tX, tY + 10.16), JP2.pin("1"));
 junction(P(tX, tY));
-gnd(wire(J5.pin("2"), P(147.32, J5.pin("2").y), P(147.32, J5.pin("2").y + 2.54)));
-const JP2 = placeByPin("JP2", "Jumper:SolderJumper_2_Bridged", "1", P(tX + 2.54, tY + 20.32), { value: "NTC_OFF", fp: FP.jumperClosed });
-wire(P(tX, tY + 10.16), P(tX, tY + 20.32), JP2.pin("1"));
-junction(P(tX, tY + 10.16));
-gnd(wire(JP2.pin("2"), P(JP2.pin("2").x + 2.54, tY + 20.32), P(JP2.pin("2").x + 2.54, tY + 22.86)));
+gnd(wire(JP2.pin("2"), P(JP2.pin("2").x + 2.54, tY + 10.16), P(JP2.pin("2").x + 2.54, tY + 12.7)));
 TEXTS.push({
   at: P(50.8, 116.84),
   text: [
@@ -316,8 +314,8 @@ TEXTS.push({
     "- J4 SOLAR: 5V panel, 1 = VIN, 2 = GND. CN3163 input 4.4-6V, absolute max 6.5V: panel Voc must stay below 6.5V.",
     "- U1 CN3163 linear charger, 4.2V float (FB = BAT), ICH = 1188V / R1 = 0.99A, cut back automatically when the panel",
     "  sags toward 4.4V and by thermal regulation (~130C die).",
-    "- J5 NTC: optional 10k B3950 battery thermistor (TEMP, GND). R4/R5 set a ~1-46C charge window. JP2 (closed as made)",
-    "  grounds TEMP, which disables temperature sensing: cut JP2 when fitting the NTC.",
+    "- JP2 NTC: pads for an optional 10k B3950 battery thermistor (TEMP, GND). R4/R5 set a ~1-46C charge window. As made the",
+    "  pads are joined by a copper link, which grounds TEMP and disables temperature sensing: cut the link, then fit the NTC.",
     "- D1 red = charging (~CHRG low), D2 green = charge done (~DONE low). Fed from VIN through JP1, a normally open",
     "  solder jumper: bridge it to enable the LEDs. Left open the LEDs are off and draw nothing.",
     "- J1 BATTERY: 1S Li-ion, 1 = BAT_IN (+), 2 = GND. Q1 AO3401A (gate to GND) passes it to BAT+ and blocks a reversed cell.",
@@ -423,7 +421,7 @@ const out = [
 	(title_block
 		(title "SNAP Mini Power Controller")
 		(date "2026-10-30")
-		(rev "0.2")
+		(rev "1.0")
 		(comment 1 "Solar -> CN3163 -> Q1 -> battery; switch -> load; battery NTC. 14.4 x 12.2 mm")
 	)
 	(lib_symbols
